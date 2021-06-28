@@ -1,0 +1,46 @@
+.popup {
+    background-color: white;
+    position: relative;
+    position: relative;
+    width: 100%;
+    padding-bottom: 24px;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    margin-top: 117px;
+
+    &-wrapper {
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        @include row-bw-start;
+        justify-content: center;
+        display: none;
+        z-index: 6;
+        flex-wrap: wrap;
+
+        &--open {
+            display: flex;
+        }
+    }
+
+    .hotels-filter {
+        margin: 0;
+        padding-bottom: 88px;
+        &_tabs {
+            border-bottom: 4px solid $red;
+            background-color: white;
+        }
+
+        &_content {
+        }
+
+      
+    }
+
+   
+}

@@ -1,25 +1,43 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { Suspense, useEffect } from "react";
+
+import { Router, Switch, Route } from "react-router";
+import { createBrowserHistory } from "history";
+
+import { AppRoutes } from "./routes/routes";
+
+import { LayoutApp } from "./components/export";
+import "./styles/main.scss";
+
+export const AppHistory = createBrowserHistory();
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+	return (
+		<Suspense fallback={"  "}>
+			<Router basename={"/"} history={AppHistory}>
+				<div>
+					<Switch>
+						{AppRoutes.map((route, i) => {
+							const { Component } = route;
+
+							return (
+								<Route
+									key={i}
+									hasChildren={true}
+									path={route.path}
+									exact={route.exact}
+									component={(props) => (
+										<LayoutApp>
+											<Component />
+										</LayoutApp>
+									)}
+								/>
+							);
+						})}
+					</Switch>
+				</div>
+			</Router>
+		</Suspense>
+	);
 }
 
 export default App;

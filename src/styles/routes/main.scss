@@ -1,0 +1,93 @@
+.main {
+    &_welcome-section {
+        color: white;
+        @include image-bg;
+        background-image: url("../../assets/main_bg.png");
+    
+        padding: 135px 0 406px 0; // 260 from top
+        margin-bottom: 12px;
+
+        &_title {
+            @include col;
+            align-items: center;
+            flex-wrap: wrap;
+            text-transform: uppercase;
+            text-align: center;
+            margin-bottom: 36px;
+            span {
+               display: inline-block;
+            }
+    
+            span:first-child {
+                font-family: 'Gilroy-600', sans-serif;
+                font-size: 100px;
+                line-height: 150px;
+            }
+    
+            span:last-child {
+                font-family: 'Gilroy-400', sans-serif;
+                font-weight: 500;
+                font-size: 53px;
+                line-height: 80px;
+            }
+        }
+
+        .btn {
+            margin: 0 auto;
+            height: 56px;
+            font-size: 20px;
+            line-height: 24px;
+            &:active {
+              background-color: white;
+              color:#4472FF;
+            }
+        }
+    }
+
+    &-themes {
+        flex-wrap: wrap;
+
+        &_title {
+            font-size: 30px;
+            line-height: 38px;
+            margin-bottom: 32px;
+            font-family: 'Gilroy-700', sans-serif;
+            text-transform: uppercase;
+            color: $dark-gray;
+            text-align: center;
+        }
+    } 
+}
+
+@media(max-width: $breakpoint-sm) {
+    .main_welcome-section {
+        padding: 135px 16px 358px 16px;
+        margin-bottom: 20px;
+
+        &_title {
+            margin-bottom: 61px;
+
+            span:first-child {
+                font-size: 61px;
+                line-height: 67px;
+                margin-bottom: 27px;
+            }
+    
+            span:last-child {
+                font-size: 25px;
+                line-height: 32px;
+            }
+        }
+        .btn  {
+            height: 48px;
+            font-size: 18px;
+            line-height: 22px;
+        }
+    }
+
+    .main-themes {
+        &_title {
+            line-height: 26px;
+        }
+    }
+}

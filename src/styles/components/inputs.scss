@@ -1,0 +1,143 @@
+.radio-btn {
+    position: absolute;
+    z-index: -1;
+    opacity: 0;
+    cursor: pointer;
+    &_label {
+        font-size: 14px;  
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+
+    &::before {
+        @include row-center-center;
+        margin-right: 3px;
+        border: 2px solid $dark-gray;
+        width: 19px;
+        height: 19px;
+        background-color: white;
+        // display: inline-block;
+      }
+
+      &:before, &:after {
+        border-radius: 50%;
+        content: '';
+      }
+
+      &:after{
+          @include pseudo($width: 11px, $height: 11px, $left: 6px, $top: 6px, $transform: translate(0, 0%));
+      }
+    }
+
+
+    &:checked + label {
+        &::before {
+            border-color: $red;
+          }
+
+          &:after{
+            background-color: $red;
+          }
+    }
+}
+
+.trevellers-form {
+  max-width: 350px;
+  margin: 0 auto;
+
+  &_title {
+    font-size: 15px;
+    font-family: 'Gilroy-700', sans-serif;
+    margin-bottom: 18px;
+  }
+  
+
+  &_pay {
+    &-block {
+      margin-top: 30px;
+    }
+    &-methods {
+      border-radius: 10px;
+      background-color: $dividers;
+      margin-bottom: 18px;
+      padding: 16px 8px 24px 13px;
+  
+      &_title {
+        font-size: 15px;
+        margin-bottom: 18px;
+        opacity: 0.5;
+      }
+    }
+  }
+
+  .btn {
+    width: 100%;
+    height: 42px;
+  }
+}
+
+.input {
+  padding: 15px 13px;
+  background-color: $dividers;
+  border-radius: 10px;
+
+  &::placeholder {
+    opacity: 0.5;
+  }
+  &-wrapper {
+    margin-bottom: 12px;
+  }
+  &-wrapper--arrow {
+    position: relative;
+
+    svg {
+      @include position($right:18px, $top: 50%, $transform: translate(0, -50%));
+      stroke: #4D4D4D;
+      cursor: pointer;
+    }
+  }
+
+  .input:not([value=""]) + svg {
+    stroke: $red;
+  }
+ 
+}
+
+.checkbox {
+  -webkit-appearance: none;
+
+  width: 28px;
+  height: 28px;
+
+  background: $dividers;
+  border-radius: 8px;
+  margin-right: 14px;
+  
+  position: relative;
+  transition: all 0.4s ease;
+
+  &-wrapper {
+    @include row-start-center;
+    margin: 40px 0 24px 0;
+  }
+
+  &:checked {
+    background: $red;
+
+    &:after {
+      content: url("../../assets/check-mark.svg");
+      @include pseudo($left: 5px, $top: 5px, $width: unset, $height: unset);
+    }
+
+   
+  }
+
+
+  &-label {
+      font-weight: 500;
+      flex: 1;
+      font-size: 14px;
+      line-height: 14px;
+  }  
+}
+

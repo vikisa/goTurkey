@@ -1,0 +1,61 @@
+.footer {
+    @include col;
+    align-items: center;
+    background-color: $dark-gray;
+    padding: 43px 0 34px 0;
+    color: white;
+    font-weight: 500;
+
+    &--main {
+        padding: 46px 0;
+    }
+
+    &-logo {
+        width: 216px;
+        height: 71px;
+    }
+
+    &-contacts {
+        margin: 25px 0 16px 0;
+        font-size: 18px;
+        line-height: 24px;
+    }
+
+    &-phone {
+       margin-right: 16px;
+    }
+
+    &-email, &-phone {
+        padding-left: 24px;
+        position: relative;
+    }
+
+    &-email {
+        padding-left: 30px;
+    }
+
+    &-phone:before {
+        content: url("../../assets/phone.svg");
+        @include pseudo($height: 20px, $left: 0, $top: 50%, $transform: translate(0, -50%));
+    }
+
+    &-email:before {
+        content: url("../../assets/mail.svg");
+        @include pseudo($height: 18px, $width: 18px, $left: 0, $top: 50%, $transform: translate(0, -50%));
+    }
+
+    &-rights {
+        font-size: 15px;
+        margin: 0 0 5px 0;
+    }
+
+    &-year {
+        font-size: 18px;
+    }
+}
+
+@media(max-width: $breakpoint-sm) {
+    .footer {
+        padding: 40px 0;
+    }
+}

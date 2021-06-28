@@ -1,0 +1,100 @@
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+button,
+textarea,
+ul, li,
+figure {
+  margin: 0;
+  padding: 0;
+  font-weight: inherit;
+  font-size: inherit;
+}
+
+*{
+  // -ms-overflow-style: none;  /* IE and Edge */
+  // scrollbar-width: none;  /* Firefox */ 
+  touch-action: manipulation;
+  -ms-touch-action: manipulation;
+
+  &::-webkit-scrollbar {
+    // display: none;
+  }
+
+
+  // &::-webkit-scrollbar {
+  //   background-color: transparent;
+  //   width: 0px;
+  // }
+  // &::-webkit-scrollbar-thumb {
+  //   background-color: transparent;
+  // }
+  -webkit-overflow-scrolling: touch;
+
+}
+
+
+li {
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  display: inline-block;
+}
+
+button {
+  border: none;
+  font: inherit;
+  cursor: pointer;
+  background: transparent;
+  color: inherit;
+  display: block;
+  &:disabled {
+    cursor: default;
+  }
+}
+
+
+
+input {
+  border: none;
+  width: 100%;
+  -webkit-box-shadow: inherit;
+
+  cursor: pointer;
+
+}
+
+@media screen and (-webkit-min-device-pixel-ratio:0) and (max-device-width: 998px)  {
+  select,
+  textarea,
+  input,
+  input[type="tel"],
+  input:focus{
+    font-size: 16px;
+  } 
+}
+
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button
+{
+  -webkit-appearance: none;
+  margin: 0;
+  -webkit-writing-mode: unset !important;
+}
+
+textarea {
+  border: none;
+  resize: none;
+}
+
+img {
+  display: block;
+}

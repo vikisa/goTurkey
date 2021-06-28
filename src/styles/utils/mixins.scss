@@ -1,0 +1,206 @@
+@mixin row {
+  display: flex;
+  align-items: center;
+}
+
+@mixin row-start {
+  display: flex;
+  align-items: flex-start;
+}
+
+@mixin row-start-start {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+
+@mixin row-start-center {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+@mixin row-center-center {
+  display: flex;
+  align-items: center;
+
+  justify-content: center;
+}
+
+
+@mixin row-bw {
+  display: flex;
+  align-items: center;
+
+  justify-content: space-between;
+}
+
+@mixin row-bw-stretch {
+  display: flex;
+  align-items: stretch;
+
+  justify-content: space-between;
+}
+
+@mixin row-bw-start {
+  display: flex;
+
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+@mixin row-bw-center {
+  display: flex;
+
+  justify-content: space-between;
+  align-items: center;
+};
+
+@mixin row-bw-end {
+  display: flex;
+
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+@mixin col {
+  display: flex;
+  flex-direction: column;
+}
+@mixin col-center-start {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+@mixin col-center-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+@mixin col-center-stretch {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+}
+
+
+@mixin col-bw-center {
+  display: flex;
+  flex-direction: column;
+
+  justify-content: space-between;
+  align-items: center;
+}
+
+@mixin col-bw-start {
+  display: flex;
+  flex-direction: column;
+
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+@mixin col-bw-end {
+  display: flex;
+  flex-direction: column;
+
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+@mixin col-end-start{
+  display: flex;
+  flex-direction: column;
+
+  justify-content: flex-end;
+  align-items: flex-start;
+}
+
+
+@mixin fixed($left: 0, $right: 0, $top: 0, $bottom: 0, $z-index: 1, $bgColor: "initial") {
+  position: fixed;
+  left: $left;
+  right: $right;
+  bottom:$bottom;
+  top: $top;
+  z-index: $z-index;
+  background-color: $bgColor;
+}
+
+@mixin pseudo(
+  $top: unset,
+  $bottom: unset,
+  $left: unset,
+  $right: unset,
+  $width:unset,
+  $height: unset,
+  $transform: initial
+) {
+  position: absolute;
+  top: $top;
+  bottom: $bottom;
+  left: $left;
+  right: $right;
+  width: $width;
+  height: $height;
+  transform: $transform
+}
+
+@mixin position(
+  $position: absolute,
+  $top: unset,
+  $bottom: unset,
+  $left: unset,
+  $right: unset,
+  $transform: unset,
+  $zIndex: 1
+) {
+  position: $position;
+  top: $top;
+  bottom: $bottom;
+  left: $left;
+  right: $right;
+  transform: $transform;
+  z-index: $zIndex;
+}
+
+@mixin round($size: '', $bgColor: 'none', $bgImage: 'unset') {
+  border-radius: 50%;
+  width: $size;
+  height: $size;
+  background-color: $bgColor;
+  background-image: $bgImage;
+  overflow: hidden;
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+@mixin square($size: '', $bgColor: #f4f4f8, $borderRadius: 0) {
+  width: $size;
+  height: $size;
+  border-radius: $borderRadius;
+  background-color: $bgColor;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+
+@mixin image-bg  {
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center center;
+  background-color: #f4f4f8;
+}

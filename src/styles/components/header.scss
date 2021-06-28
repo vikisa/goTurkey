@@ -1,0 +1,32 @@
+.header {
+    @include row-center-center;
+    background-color: $red;
+    padding: 32px 0 22px 0;
+
+    &-logo {
+        width: 216px;
+        height: 71px;
+    }
+}
+
+.bread-crumbs  {
+    color: $light-gray;
+
+    &_item--active {
+        color: $dark-gray;
+    }
+}
+
+@media(max-width: $breakpoint-sm) {
+    .header {
+        padding: 29px 0 25px 0;
+
+        &--main {
+            padding: 14px 0;
+            .header-logo {
+                width: 122px;
+                height: 40px;
+            }
+        }
+    }
+}

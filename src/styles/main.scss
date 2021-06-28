@@ -1,0 +1,130 @@
+@import './utils/normalize.scss';
+@import './utils/reset.scss';
+@import './utils/variables.scss';
+@import './utils/mixins.scss';
+
+* {
+    box-sizing: border-box;
+    outline: none;
+  }
+  
+
+  @font-face {
+    font-family: 'Gilroy-400';
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: local('Gilroy'),
+        url('./fonts/Gilroy/Gilroy-Light.ttf') format('opentype');
+    }
+    
+@font-face {
+font-family: 'Gilroy-500';
+font-style: normal;
+font-weight: 500;
+font-display: swap;
+src: local('Gilroy'),
+    url('./fonts/Gilroy/Gilroy-Regular.ttf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Gilroy-600';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: local('Gilroy'),
+      url('./fonts/Gilroy/Gilroy-SemiBold.ttf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Gilroy-700';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: local('Gilroy'),
+      url('./fonts/Gilroy/Gilroy-Bold.ttf') format('opentype');
+}
+
+@font-face {
+  font-family: 'Gilroy-800';
+  font-style: normal;
+  font-weight: 800;
+  font-display: swap;
+  src: local('Gilroy'),
+      url('./fonts/Gilroy/Gilroy-ExtraBold.ttf') format('opentype');
+}
+
+body,
+html {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  color: $dark-gray;
+  font-family: 'Gilroy-500', sans-serif;
+  font-weight: 600;
+//   @include main-text;
+  -webkit-font-smoothing: antialiased;
+  background-color: $bg-gray;
+  touch-action: manipulation;
+  // overflow-x: hidden;
+}
+
+.price {
+  font-family: 'Gilroy-500', sans-serif;
+  color: $red;
+}
+
+.app {
+  position: relative;
+  &-content {
+    padding: 0 7px;
+  }
+}
+
+
+
+.container {
+  
+  &-s {
+    width: 100%;
+    margin: 0 auto;
+    max-width: 730px;
+  }
+
+  &-m {
+    width: 100%;
+    margin: 0 auto;
+  // padding: 0 7px;
+
+    max-width: 1100px;
+  }
+
+  &-l {
+    width: 100%;
+  margin: 0 auto;
+  // padding: 0 7px;
+
+    max-width: 1302px;
+  }
+}
+
+@media(max-width: 768px) {
+  .container{
+
+    &-l {
+      padding: 0 16px;
+    }
+
+    &-s {
+      padding: 0 7px;
+    }
+  }
+}
+
+.row-bw-center {
+  @include row-bw-end;
+  align-items: center;
+}
+@import './components/export.scss';
+@import './routes/export.scss';
