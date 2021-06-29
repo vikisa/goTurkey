@@ -147,6 +147,9 @@ const HotelDetails = () => {
 	};
 
 	useEffect(() => {
+		setHotel(hotelItem);
+		setFlights(flightsArr); //response.result ||
+
 		getHotelById(hotel.id).then(
 			(response) => {
 				console.log("getHotelImages", response);

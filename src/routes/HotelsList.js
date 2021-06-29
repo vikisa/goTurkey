@@ -121,9 +121,13 @@ export const HotelsList = () => {
 	};
 
 	useEffect(() => {
+		const hotelsArr = getHotelsArr(25);
+		setHotels(hotelsArr);
+		sliceHotelsArr({ hotels: hotelsArr, page });
+
 		getAllHotels().then(
 			(response) => {
-				const hotelsArr = response.result || getHotelsArr(25);
+				//	const hotelsArr = getHotelsArr(25); //response.result ||
 				setHotels(hotelsArr);
 				sliceHotelsArr({ hotels: hotelsArr, page });
 				console.log("RESPONSE", response);
