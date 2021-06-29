@@ -2,7 +2,7 @@
   "name": "lastmin_tours",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://ekaterinaatm.github.io/EkaterinaaTM.github.io",
+  "homepage": "https://ekaterinaatm.github.io",
   "dependencies": {
     "@stripe/react-stripe-js": "^1.4.1",
     "@stripe/stripe-js": "^1.15.1",
