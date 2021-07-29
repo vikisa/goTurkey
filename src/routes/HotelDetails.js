@@ -2,15 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useMeasure, useWindowSize } from "react-use";
 import cx from "classnames";
 import { add, sub, format } from "date-fns";
-import {
-	useStripe,
-	useElements,
-	CardNumberElement,
-	CardCvcElement,
-	CardExpiryElement,
-	Elements,
-} from "@stripe/react-stripe-js";
-import StripeCheckout from "./StripeCheckout";
+import { Elements } from "@stripe/react-stripe-js";
 
 import { loadStripe } from "@stripe/stripe-js";
 import { CarouselProvider, Slider, DotGroup } from "pure-react-carousel";
@@ -32,6 +24,7 @@ const HotelDetails = () => {
 	const { width } = useWindowSize();
 	const pathname = history?.location?.pathname;
 	const [descRef, { height: descHeight }] = useMeasure();
+	const [isDescOpen, setIsDescOpen] = useState(false);
 
 	const cardBottomElements = [
 		{
@@ -67,18 +60,21 @@ const HotelDetails = () => {
 		},
 	];
 
+	// данные буккинга с local storage
 	const bookingDataLS = JSON.parse(localStorage.getItem("bookingData"));
 	console.log("bookingDataLS", bookingDataLS);
 
+	// информация о конкретном отеле  с json
 	const [hotel, setHotel] = useState([]);
+	// список рейсов с json
 	const [flights, setFlights] = useState([]);
 
-	const [isDescOpen, setIsDescOpen] = useState(false);
 	const [formState, setFormState] = useState({
-		isOpen: pathname?.includes("purchase"),
+		isOpen: pathname?.includes("purchase"), // открыта ли форма пассажира
 		selectedFlight: flightsArr[0] || {},
 	});
 
+	// выбор рейса (клик на кнопку book)
 	const handleBookClick = () => {
 		history.push(`/hotel-details/${hotel?.id}/purchase`);
 
@@ -111,16 +107,8 @@ const HotelDetails = () => {
 
 	let stripeToken = "pk_test_veSmzIOx9GKjWUx92TBwl0Qq00NRw7pDpd";
 	const stripePromise = loadStripe(stripeToken);
-	const onToken = (token) => {
-		fetch("/save-stripe-token", {
-			method: "POST",
-			body: JSON.stringify(token),
-		}).then((response) => {
-			response.json().then((data) => {
-				alert(`We are in business, ${data.email}`);
-			});
-		});
-	};
+
+	// клик на PAY
 	const handlePay = async (event) => {
 		////  Get Stripe.js instance
 		// const stripe = await stripePromise;
@@ -142,9 +130,10 @@ const HotelDetails = () => {
 	};
 
 	useEffect(() => {
-		setHotel(hotelItem);
-		setFlights(flightsArr); //response.result ||
+		setHotel(hotelItem); // удалить строку после подкл. к апи
+		setFlights(flightsArr); // удалить строку после подкл. к апи
 
+		// если надо будет запрашивать доп инфу о отеле по id
 		getHotelById(hotel.id).then(
 			(response) => {
 				console.log("getHotelImages", response);

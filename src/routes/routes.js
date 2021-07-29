@@ -3,7 +3,6 @@ import { lazy } from "react";
 const Main = lazy(() => import("./Main"));
 const HotelsList = lazy(() => import("./HotelsList"));
 const HotelDetails = lazy(() => import("./HotelDetails"));
-const Purchase = lazy(() => import("./Purchase"));
 
 export const AppRoutes = [
 	{

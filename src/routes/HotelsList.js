@@ -4,7 +4,7 @@ import useRouter from "use-react-router";
 import ReactPaginate from "react-paginate";
 import { useWindowSize, useLockBodyScroll } from "react-use";
 
-import { getAllHotels, getAllTours } from "./apiQueries";
+import { getAllHotels } from "./apiQueries";
 import {
 	BreadCrumbs,
 	Icons,
@@ -76,6 +76,7 @@ export const HotelsList = () => {
 	const [hotels, setHotels] = useState([]);
 	const [hotelsPage, setHotelsPage] = useState([]);
 	const pagesCount = Math.ceil(hotels?.length / layout.hotelsPerPage);
+
 	const sliceHotelsArr = ({ hotels, page = 1 }) => {
 		const hotelsCount = page * layout.hotelsPerPage;
 		const startIndex = page === 1 ? 0 : hotelsCount - layout.hotelsPerPage;
@@ -96,12 +97,14 @@ export const HotelsList = () => {
 			hotelsPage,
 		);
 	};
+
 	const handlePageChange = ({ selected }) => {
 		const newPage = selected + 1;
 		setPage(selected + 1);
 		sliceHotelsArr({ hotels, page: newPage });
 	};
 
+	// клик по карточке
 	const handleHotelCardClick = ({ hotel }) => {
 		const link = `/hotel-details/${hotel.id}`;
 		history.push(link);
@@ -121,25 +124,17 @@ export const HotelsList = () => {
 	};
 
 	useEffect(() => {
-		const hotelsArr = getHotelsArr(25);
-		setHotels(hotelsArr);
-		sliceHotelsArr({ hotels: hotelsArr, page });
+		const hotelsArr = getHotelsArr(25); // удалить строку после подкл. к апи
+		setHotels(hotelsArr); // удалить строку после подкл. к апи
+		sliceHotelsArr({ hotels: hotelsArr, page }); // удалить строку после подкл. к апи
 
+		// запрос списка отелей
 		getAllHotels().then(
 			(response) => {
 				//	const hotelsArr = getHotelsArr(25); //response.result ||
 				setHotels(hotelsArr);
 				sliceHotelsArr({ hotels: hotelsArr, page });
 				console.log("RESPONSE", response);
-			},
-			(error) => {
-				console.error("Error while geocoding", error);
-			},
-		);
-
-		getAllTours("123").then(
-			(response) => {
-				console.log("getAllTours", response);
 			},
 			(error) => {
 				console.error("Error while geocoding", error);
@@ -160,6 +155,8 @@ export const HotelsList = () => {
 					handleTabClick={handleTabClick}
 				/>
 			</FilterPopup>
+
+			{/* хлебные крошки */}
 			<BreadCrumbs>
 				<div className={`${className}-header_layout`}>
 					<Icons.Square
@@ -181,14 +178,19 @@ export const HotelsList = () => {
 				</div>
 			</BreadCrumbs>
 
+			{/* список фильтров */}
 			<HotelsFilter
 				filterState={filterState}
 				activeTabKey={isMobile ? false : filterActiveTab}
 				handleTabClick={handleTabClick}
 			/>
+
+			{/* затеменение фона */}
 			{filterActiveTab && !isMobile && (
 				<div className={`${className}-overlay`} />
 			)}
+
+			{/* карточки  */}
 			<div className={`${className}-list`}>
 				{hotelsPage.map((hotel, i) => {
 					return (
@@ -202,6 +204,7 @@ export const HotelsList = () => {
 				})}
 			</div>
 
+			{/* пагинация */}
 			<div className={`${className}-pagination`}>
 				<ReactPaginate
 					previousLabel={
