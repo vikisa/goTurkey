@@ -165,7 +165,7 @@
         }
 
         &-next {
-            @include position($right: 0px, $top: 50%, $transform: translate(0%, -50%));
+            @include position($right: 0px, $top: calc(50% - 55px), $transform: translate(0%, -50%));
             // margin-right: 30px;
 
             svg {
@@ -175,7 +175,7 @@
 
         &-back {
             // margin-left: 30px;
-            @include position($left: 0px, $top: 50%, $transform: translate(0%, -50%));
+            @include position($left: 0px, $top: calc(50% - 55px), $transform: translate(0%, -50%));
 
            
         }

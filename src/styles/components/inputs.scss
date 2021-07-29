@@ -3,37 +3,58 @@
     z-index: -1;
     opacity: 0;
     cursor: pointer;
-    &_label {
-        font-size: 14px;  
-        position: relative;
-        display: inline-flex;
-        align-items: center;
+    width: 0;
+    height: 0;
+    
+    &_wrapper {
+      @include row-center-center;
+    }
 
-    &::before {
-        @include row-center-center;
-        margin-right: 3px;
-        border: 2px solid $dark-gray;
-        width: 19px;
-        height: 19px;
-        background-color: white;
-        // display: inline-block;
-      }
+    &-visible {
+      @include row-center-center;
+      display: inline-flex;
+      margin-right: 3px;
+      border: 2px solid $dark-gray;
+      width: 23px;
+      height: 23px;
+      border-radius: 50%;
+      background-color: white;
+      position: relative;
 
-      &:before, &:after {
+      &:after{
+        @include pseudo($width: 11px, $height: 11px, $left: 4px, $top: 4px, $transform: translate(0, 0%));
         border-radius: 50%;
         content: '';
       }
+    }
 
-      &:after{
-          @include pseudo($width: 11px, $height: 11px, $left: 6px, $top: 6px, $transform: translate(0, 0%));
-      }
+    &_label {
+        font-size: 14px;
+
+    // &::before {
+    //     @include row-center-center;
+    //     margin-right: 3px;
+    //     border: 2px solid $dark-gray;
+    //     width: 19px;
+    //     height: 19px;
+    //     background-color: white;
+    //   }
+
+      // &:before, &:after {
+      //   border-radius: 50%;
+      //   content: '';
+      //   cursor: pointer;
+      // }
+
+      // &:after{
+      //     @include pseudo($width: 11px, $height: 11px, $left: 6px, $top: 6px, $transform: translate(0, 0%));
+      // }
     }
 
 
-    &:checked + label {
-        &::before {
-            border-color: $red;
-          }
+    &:checked + button {
+      border-color: $red;
+
 
           &:after{
             background-color: $red;

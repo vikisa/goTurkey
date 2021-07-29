@@ -68,7 +68,7 @@ const HotelDetails = () => {
 	];
 
 	const bookingDataLS = JSON.parse(localStorage.getItem("bookingData"));
-	console.log("bookingDataLS", bookingDataLS.origin);
+	console.log("bookingDataLS", bookingDataLS);
 
 	const [hotel, setHotel] = useState([]);
 	const [flights, setFlights] = useState([]);
@@ -103,7 +103,7 @@ const HotelDetails = () => {
 
 		localStorage.setItem(
 			"bookingData",
-			JSON.stringify({ ...bookingDataLS, flight: formState?.flight }),
+			JSON.stringify({ ...bookingDataLS, flight: formState?.selectedFlight }),
 		);
 
 		setFormState({ ...formState, isOpen: true });
@@ -122,23 +122,18 @@ const HotelDetails = () => {
 		});
 	};
 	const handlePay = async (event) => {
-		window.open("https://buy.stripe.com/test_fZe8xf31QcScfcscMM");
-		// Get Stripe.js instance
+		////  Get Stripe.js instance
 		// const stripe = await stripePromise;
-
 		// // Call your backend to create the Checkout Session
 		// const response = await fetch("/create-checkout-session", {
 		// 	method: "POST",
 		// });
-
 		// const session = await response.json();
 		// console.log("session", session);
-
 		// // When the customer clicks on the button, redirect them to Checkout.
 		// const result = await stripe.redirectToCheckout({
 		// 	sessionId: session.id,
 		// });
-
 		// if (result.error) {
 		// 	// If `redirectToCheckout` fails due to a browser or network
 		// 	// error, display the localized error message to your customer
@@ -211,185 +206,180 @@ const HotelDetails = () => {
 	}, [formState.isOpen, pathname]);
 
 	return (
-		// <Elements stripe={stripePromise}>
-		<div
-			className={cx(`container-s ${className}`, {
-				"hotel-details--purchase": pathname.includes("purchase"),
-				"hotel-details--travellers": pathname.includes("travellers"),
-			})}>
-			<BreadCrumbs breadCrumb={hotel.title} />
-			{/* <StripeCheckout
-				token={onToken}
-				stripeKey={stripeToken}
-				currency='USD'
-				name='hotel'
-				description='desc'
-				amount={2500}
-			/> */}
+		<Elements stripe={stripePromise}>
 			<div
-				className={cx(`${className}_card`, {
-					"hotel-details_card--purchase":
-						pathname.includes("purchase") || pathname.includes("travellers"),
+				className={cx(`container-s ${className}`, {
+					"hotel-details--purchase": pathname.includes("purchase"),
+					"hotel-details--travellers": pathname.includes("travellers"),
 				})}>
-				<CarouselProvider
-					infinite={false}
-					dragStep={1}
-					isIntrinsicHeight={true}
-					visibleSlides={1}
-					naturalSlideWidth={100}
-					naturalSlideHeight={100}
-					totalSlides={hotel?.imgs?.length}>
-					<Slider>
-						{hotel?.imgs?.map((img, i) => (
-							<img
-								className={`${className}_card-img`}
-								src={img}
-								alt='hotel preview'
-								key={i}
-							/>
-						))}
-					</Slider>
-					<DotGroup className={`slider-dots ${className}_card_slider-dots`} />
-				</CarouselProvider>
+				<BreadCrumbs breadCrumb={hotel.title} />
 
-				<div className={`${className}_card-header`}>
-					<h2 className={`${className}_card-header_title`}>{hotel.title}</h2>
-					<p className={`${className}_card-header_cities`}> {hotel.cities}</p>
-					{width <= 480 && formState.isOpen && (
+				<div
+					className={cx(`${className}_card`, {
+						"hotel-details_card--purchase":
+							pathname.includes("purchase") || pathname.includes("travellers"),
+					})}>
+					<CarouselProvider
+						infinite={false}
+						dragStep={1}
+						isIntrinsicHeight={true}
+						visibleSlides={1}
+						naturalSlideWidth={100}
+						naturalSlideHeight={100}
+						totalSlides={hotel?.imgs?.length}>
+						<Slider>
+							{hotel?.imgs?.map((img, i) => (
+								<img
+									className={`${className}_card-img`}
+									src={img}
+									alt='hotel preview'
+									key={i}
+								/>
+							))}
+						</Slider>
+						<DotGroup className={`slider-dots ${className}_card_slider-dots`} />
+					</CarouselProvider>
+
+					<div className={`${className}_card-header`}>
+						<h2 className={`${className}_card-header_title`}>{hotel.title}</h2>
+						<p className={`${className}_card-header_cities`}> {hotel.cities}</p>
+						{width <= 480 && formState.isOpen && (
+							<div className={`${className}_card-flight`}>
+								<span
+									className={`${className}_choice-price price`}>{`${bookingDataLS?.flight?.price}$`}</span>
+								<span className={`${className}_choice-date`}>
+									{bookingDataLS?.flight?.date}
+								</span>
+							</div>
+						)}
+					</div>
+
+					{true && (
+						<div className={`${className}_card-bottom`}>
+							{cardBottomElements.map((item, i) => (
+								<div className='row-bw-center' key={i}>
+									{item.icon}
+									{hotel && hotel[item.key]}
+								</div>
+							))}
+						</div>
+					)}
+
+					{formState.isOpen && width > 480 && (
 						<div className={`${className}_card-flight`}>
 							<span
-								className={`${className}_choice-price price`}>{`${bookingDataLS?.flight?.price}$`}</span>
+								className={`${className}_choice-price price`}>{`${formState?.selectedFlight?.price}$`}</span>
 							<span className={`${className}_choice-date`}>
-								{bookingDataLS?.flight?.date}
+								{formState?.selectedFlight?.date}
 							</span>
 						</div>
 					)}
 				</div>
 
-				{true && (
-					<div className={`${className}_card-bottom`}>
-						{cardBottomElements.map((item, i) => (
-							<div className='row-bw-center' key={i}>
-								{item.icon}
-								{hotel && hotel[item.key]}
+				{!formState.isOpen && (
+					<div>
+						<section className={`${className}_desc-block`}>
+							<div
+								style={{
+									height: isDescOpen ? `${descHeight}px` : "88px",
+								}}
+								className={cx(`${className}_desc-block_text`, {
+									"hotel-details_desc-block_text--visible": isDescOpen,
+								})}>
+								<p ref={descRef}> {hotel.desc}</p>
 							</div>
-						))}
+							{!isDescOpen && (
+								<p
+									onClick={() => setIsDescOpen(true)}
+									className={`${className}_desc-block_more`}>
+									<span>More</span> <Icons.DropArrow />
+								</p>
+							)}
+						</section>
+
+						<section className={`${className}_flight-block`}>
+							{selectedFlightBlocks.map((block, i) => {
+								const { title, subtitle, desc } = block;
+								const selectedFlight = formState.selectedFlight;
+								return (
+									<div className={`${className}_flight-block_item`} key={i}>
+										<p className={`${className}_flight-block_item-title`}>
+											{title}
+										</p>
+										<p className={`${className}_flight-block_item-subtitle`}>
+											{selectedFlight[subtitle]}
+										</p>
+										{desc && (
+											<p className={`${className}_flight-block_item-desc`}>
+												{selectedFlight[desc]}
+											</p>
+										)}
+									</div>
+								);
+							})}
+						</section>
+
+						<div className={`${className}_more-dates_title`}>
+							More dates to this hotel
+						</div>
+						<section className={`${className}_more-dates`}>
+							{flights?.map((flight, i) => {
+								const { title, subtitle, price, date } = flight;
+								return (
+									<div className={`${className}_more-dates_item`} key={i}>
+										<div className='row-bw-center'>
+											<div>
+												<p className={`${className}_more-dates_item-cities`}>
+													{title}
+												</p>
+												<p className={`${className}_more-dates_item-stops`}>
+													{subtitle}
+												</p>
+											</div>
+											<div>
+												<p className={`${className}_more-dates_item-price`}>
+													{`${price}$`}
+												</p>
+												<p className={`${className}_more-dates_item-date`}>
+													{date}
+												</p>
+											</div>
+										</div>
+
+										<Button
+											text='Book'
+											variant='secondary'
+											onClick={() =>
+												setFormState({ ...formState, selectedFlight: flight })
+											}
+										/>
+									</div>
+								);
+							})}
+						</section>
+
+						<div className={`${className}_choice`}>
+							<div>
+								<p
+									className={`${className}_choice-price price`}>{`${formState.selectedFlight.price}$`}</p>
+								<p className={`${className}_choice-date`}>
+									{formState.selectedFlight.date}
+								</p>
+							</div>
+
+							<Button text='Book' onClick={handleBookClick} />
+						</div>
 					</div>
 				)}
-
-				{formState.isOpen && width > 480 && (
-					<div className={`${className}_card-flight`}>
-						<span
-							className={`${className}_choice-price price`}>{`${formState?.selectedFlight?.price}$`}</span>
-						<span className={`${className}_choice-date`}>
-							{formState?.selectedFlight?.date}
-						</span>
-					</div>
+				{formState.isOpen && (
+					<BookingForm
+						flight={formState.selectedFlight}
+						hotel={hotel}
+						handlePay={handlePay}
+					/>
 				)}
 			</div>
-
-			{!formState.isOpen && (
-				<div>
-					<section className={`${className}_desc-block`}>
-						<div
-							style={{
-								height: isDescOpen ? `${descHeight}px` : "88px",
-							}}
-							className={cx(`${className}_desc-block_text`, {
-								"hotel-details_desc-block_text--visible": isDescOpen,
-							})}>
-							<p ref={descRef}> {hotel.desc}</p>
-						</div>
-						{!isDescOpen && (
-							<p
-								onClick={() => setIsDescOpen(true)}
-								className={`${className}_desc-block_more`}>
-								<span>More</span> <Icons.DropArrow />
-							</p>
-						)}
-					</section>
-
-					<section className={`${className}_flight-block`}>
-						{selectedFlightBlocks.map((block, i) => {
-							const { title, subtitle, desc } = block;
-							const selectedFlight = formState.selectedFlight;
-							return (
-								<div className={`${className}_flight-block_item`} key={i}>
-									<p className={`${className}_flight-block_item-title`}>
-										{title}
-									</p>
-									<p className={`${className}_flight-block_item-subtitle`}>
-										{selectedFlight[subtitle]}
-									</p>
-									{desc && (
-										<p className={`${className}_flight-block_item-desc`}>
-											{selectedFlight[desc]}
-										</p>
-									)}
-								</div>
-							);
-						})}
-					</section>
-
-					<div className={`${className}_more-dates_title`}>
-						More dates to this hotel
-					</div>
-					<section className={`${className}_more-dates`}>
-						{flights?.map((flight, i) => {
-							const { title, subtitle, price, date } = flight;
-							return (
-								<div className={`${className}_more-dates_item`} key={i}>
-									<div className='row-bw-center'>
-										<div>
-											<p className={`${className}_more-dates_item-cities`}>
-												{title}
-											</p>
-											<p className={`${className}_more-dates_item-stops`}>
-												{subtitle}
-											</p>
-										</div>
-										<div>
-											<p className={`${className}_more-dates_item-price`}>
-												{`${price}$`}
-											</p>
-											<p className={`${className}_more-dates_item-date`}>
-												{date}
-											</p>
-										</div>
-									</div>
-
-									<Button
-										text='Book'
-										variant='secondary'
-										onClick={() => setFormState({ ...formState, flight })}
-									/>
-								</div>
-							);
-						})}
-					</section>
-
-					<div className={`${className}_choice`}>
-						<div>
-							<p
-								className={`${className}_choice-price price`}>{`${formState.selectedFlight.price}$`}</p>
-							<p className={`${className}_choice-date`}>
-								{formState.selectedFlight.date}
-							</p>
-						</div>
-
-						<Button text='Book' onClick={handleBookClick} />
-					</div>
-				</div>
-			)}
-			{formState.isOpen && (
-				<BookingForm
-					flight={formState.selectedFlight}
-					hotel={hotel}
-					handlePay={handlePay}
-				/>
-			)}
-		</div>
-		// </Elements>
+		</Elements>
 	);
 };
 

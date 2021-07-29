@@ -14,8 +14,8 @@ const Input = ({ input, placeholder, className = "", arrow, onClick }) => {
 			)}>
 			<input
 				className='input input-arrow'
-				{...input}
 				placeholder={placeholder}
+				{...input}
 				onClick={onClick && onClick}
 			/>
 			{arrow && <Icons.DropArrow />}

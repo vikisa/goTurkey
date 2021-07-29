@@ -23,9 +23,10 @@ export const BookingForm = ({ handlePay }) => {
 		dateOfExpiry: "",
 	};
 
-	const bookingLSData = JSON.parse(localStorage.getItem("bookingData"));
-	const travellersCountLSData = bookingLSData?.travellers;
-	const travellersLSData = bookingLSData?.travellersValues;
+	const getBookingLSData = () =>
+		JSON.parse(localStorage.getItem("bookingData"));
+	const travellersCountLSData = getBookingLSData()?.travellers;
+	const travellersLSData = getBookingLSData()?.travellersValues;
 
 	const [travellersForm, setTravellersForm] = useState({
 		isOpen: pathname?.includes("travellers"),
@@ -40,7 +41,7 @@ export const BookingForm = ({ handlePay }) => {
 			),
 		},
 	});
-	console.log("bookingLSData", travellersForm);
+	console.log("bookingLSData", getBookingLSData());
 	const activePersonLSData =
 		travellersLSData[travellersForm.activeTravellersKey] &&
 		travellersLSData[travellersForm.activeTravellersKey][
@@ -48,13 +49,13 @@ export const BookingForm = ({ handlePay }) => {
 		];
 
 	const openTravellersForm = ({ index, activeTravellersKey }) => {
-		history.push(`/hotel-details/${bookingLSData?.hotel?.id}/travellers`);
+		history.push(`/hotel-details/${getBookingLSData()?.hotel?.id}/travellers`);
 
 		localStorage.setItem(
 			"hotelDetailsPageData",
 			JSON.stringify({
 				title: "Travellers",
-				link: `/hotel-details/${bookingLSData?.hotel?.id}`,
+				link: `/hotel-details/${getBookingLSData()?.hotel?.id}`,
 				bookingForm: false,
 				travellersForm: true,
 			}),
@@ -83,12 +84,10 @@ export const BookingForm = ({ handlePay }) => {
 			travellers: newTravellersState,
 		});
 
-		const bookingDataLS = JSON.parse(localStorage.getItem("bookingData"));
-
 		localStorage.setItem(
 			"bookingData",
 			JSON.stringify({
-				...bookingDataLS,
+				...getBookingLSData(),
 				travellersValues: newTravellersState,
 			}),
 		);
@@ -114,10 +113,13 @@ export const BookingForm = ({ handlePay }) => {
 									const adultsLS = travellersLSData?.adults;
 									const name = adultsLS[i]?.name || "";
 
+									console.log("adultsLS", name);
+
 									return (
 										<Field
-											value={name}
-											name='full name'
+											// value={name}
+											initialValue={name}
+											name={`adult${i + 1}`}
 											placeholder={`Adult ${i + 1}`}
 											arrow
 											onClick={() =>

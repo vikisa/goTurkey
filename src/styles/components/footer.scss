@@ -57,5 +57,10 @@
 @media(max-width: $breakpoint-sm) {
     .footer {
         padding: 40px 0;
+
+        &-logo {
+            width: 184px;
+height: 40px;
+        }
     }
 }
