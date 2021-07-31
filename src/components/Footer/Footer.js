@@ -8,6 +8,28 @@ import Logo from "../../assets/lastmin-logo.svg";
 const Footer = () => {
 	const { history } = useRouter();
 	const isMain = history.location.pathname === "/";
+
+	const reqData = {
+		command: "GET_FOOTER_STATIC",
+		data: ""
+	};
+	const url = 'http://apitest.fun:9595/api/v1/commands/microsite';
+	const init = {
+		method: 'POST',
+		body: JSON.stringify(reqData),
+		headers: {
+			"Content-Type": "application/json",
+		},
+	};
+	const request = new Request(url, init);
+	fetch(request).then(function(response) {
+		return response;
+	}).then(function(response) {
+		console.log('resp', response);
+	}).catch(function(e){
+		console.log('error', e);
+	});
+
 	return (
 		<footer
 			className={cx("footer", {
