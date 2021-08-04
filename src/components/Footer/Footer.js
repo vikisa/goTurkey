@@ -8,7 +8,8 @@ const Footer = () => {
 	const { history } = useRouter();
 	const isMain = history.location.pathname === "/";
 
-	const [footerStatic, setFooterStatic] = useState({
+	const initFooter = JSON.parse(localStorage.getItem('footerData'));
+	const [footerStatic, setFooterStatic] = useState(initFooter || {
 		'footer-logo-img': '',
 		'footer-background-color': '',
 		'footer-tel-text': '',
@@ -16,15 +17,19 @@ const Footer = () => {
 		'footer-copyright-text': '',
 		'footer-date-text': '',
 	});
+
 	useEffect(() => {
-		getFooterData().then(
-			(response) => {
-				setFooterStatic(response);
-			},
-			(error) => {
-				console.error("Error getting main data", error);
-			},
-		);
+		if (!initFooter) {
+			getFooterData().then(
+				(response) => {
+					setFooterStatic(response);
+					localStorage.setItem('footerData', JSON.stringify(response));
+				},
+				(error) => {
+					console.error("Error getting main data", error);
+				},
+			);
+		}
 	});
 
 	return (

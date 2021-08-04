@@ -8,16 +8,20 @@ const Header = () => {
 	const { history } = useRouter();
 	const path = history.location.pathname;
 
-	const [headerLogoImg, setHeaderLogoImg] = useState('');
+	const [headerLogoImg, setHeaderLogoImg] = useState(localStorage.getItem('headerLogoImg') || '');
+
 	useEffect(() => {
-		getMainData().then(
-			(response) => {
-				setHeaderLogoImg(response['header-logo-img']);
-			},
-			(error) => {
-				console.error("Error getting main data", error);
-			},
-		);
+		if (!headerLogoImg) {
+			getMainData().then(
+				(response) => {
+					setHeaderLogoImg(response['header-logo-img'])
+					localStorage.setItem('headerLogoImg', response['header-logo-img'])
+				},
+				(error) => {
+					console.error("Error getting main data", error);
+				},
+			);
+		}
 	});
 
 	return (
