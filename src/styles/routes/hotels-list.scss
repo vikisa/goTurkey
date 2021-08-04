@@ -170,6 +170,17 @@
                 max-width: 338px;
                 margin: 0 auto;
                 // @include row-bw-center;
+                &:nth-of-type(2) {
+                    margin-top: 27px;
+
+                    .row-bw-center {
+                        justify-content: left;
+
+                        .radio-btn_wrapper {
+                            margin-right: 25px;
+                        }
+                    }
+                }
             }
 
             &-calendar {
@@ -341,6 +352,7 @@
 
             &-row {
                 @include row-bw-stretch;
+                width: 100%;
                 
                 .hotels-list_card {
                     min-height: 215px;

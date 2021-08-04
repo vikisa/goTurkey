@@ -9,8 +9,7 @@ import {
 } from "pure-react-carousel";
 import "pure-react-carousel/dist/react-carousel.es.css";
 
-import { Icons, ThemeBanner, apiMethods } from "../export";
-
+import { Icons, ThemeBanner } from "../export";
 const ThemeTemplate = ({
 	banner,
 	theme,
@@ -35,7 +34,7 @@ const ThemeTemplate = ({
 
 					<div className='theme-card_overlay' />
 					<h3 className='theme-card_title'> {theme.title} </h3>
-					<h4 className='theme-card_subtitle'>{theme.cities}</h4>
+					<h4 className='theme-card_subtitle'>{theme.categoryText}</h4>
 				</div>
 
 				<CarouselProvider
@@ -80,17 +79,17 @@ const ThemeTemplate = ({
 
 export default ThemeTemplate;
 
-const Slide = ({ title, cities, price, img, id,  index, goToHotelsListByTheme }) => {
+const Slide = ( slide ) => {
 	const className = "theme-slider_slide";
 
 	return (
-		<div onClick={goToHotelsListByTheme} className={`${className}`}>
-			<img className={`${className}_img`} src={img} alt='hotel preview' />
+		<div onClick={slide.goToHotelsListByTheme} className={`${className}`}>
+			<img className={`${className}_img`} src={slide['title-image']} alt='hotel preview' />
 			<div className={`${className}_content`}>
-				<h3 className={`${className}_title`}>{`${title} ${index}`}</h3>
+				<h3 className={`${className}_title`}>{`${slide.name} ${slide.index}`}</h3>
 				<div className={`${className}_content-bottom`}>
-					<h4 className={`${className}_subtitle`}> {cities} </h4>
-					<p className={`${className}_price`}> {price} </p>
+					<h4 className={`${className}_subtitle`}> {slide['location-text']} </h4>
+					<p className={`${className}_price`}> {slide['price-static'] + '$'} </p>
 				</div>
 			</div>
 		</div>

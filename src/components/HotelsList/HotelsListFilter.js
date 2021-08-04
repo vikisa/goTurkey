@@ -7,8 +7,7 @@ import DatePicker from "react-datepicker";
 import { subMonths, addMonths } from "date-fns";
 
 import "react-datepicker/dist/react-datepicker.css";
-
-const HotelsFilter = ({ filterState, activeTabKey, handleTabClick }) => {
+const HotelsFilter = ({originList, durations, filterState, activeTabKey, handleTabClick }) => {
 	const className = "hotels-filter";
 
 	const [state, setState] = useState(filterState);
@@ -43,7 +42,8 @@ const HotelsFilter = ({ filterState, activeTabKey, handleTabClick }) => {
 			return `${adultsTitle}, ${childrenTitle}`;
 		}
 	};
-	const filters = [
+
+	const [filters, setFilters] = useState([
 		{
 			icon: <Icons.Plane />,
 			title: "Origin",
@@ -68,9 +68,15 @@ const HotelsFilter = ({ filterState, activeTabKey, handleTabClick }) => {
 			value: getTravellersTitle(),
 			key: "travellers",
 		},
-	];
+	]);
 
-	useEffect(() => {}, [filterState]);
+	useEffect(() => {
+		const filtersNew = filters;
+		filtersNew[0].value = filterState.origin.title;
+		setFilters(filtersNew);
+		closeTab();
+	}, [filterState]);
+
 	return (
 		<div
 			className={cx(`${className}`, {
@@ -83,9 +89,10 @@ const HotelsFilter = ({ filterState, activeTabKey, handleTabClick }) => {
 				{filters.map((tab, i) => {
 					const { icon, title, value, key } = tab;
 					const isTabOpen = activeTabKey === key;
+					const handleClick = key === 'destination' ? null : () => handleTabClick({ tab });
 					return (
 						<li
-							onClick={() => handleTabClick({ tab })}
+							onClick={handleClick}
 							className={cx(`${className}_item`, {
 								"hotels-filter_item--active": isTabOpen,
 							})}
@@ -107,8 +114,26 @@ const HotelsFilter = ({ filterState, activeTabKey, handleTabClick }) => {
 			</ul>
 			{activeTabKey && (
 				<ul className={`${className}_content`}>
-					{(activeTabKey === "origin" || activeTabKey === "destination") &&
-						citiesArr.map((city, i) => {
+					{activeTabKey === "origin" &&
+					originList.map((city, i) => {
+						const { title, id } = city;
+						const isActive = state && state[activeTabKey].id === id;
+						return (
+							<li
+								onClick={() =>
+									updateState({ key: activeTabKey, value: city })
+								}
+								className={cx(`${className}_city`, {
+									"hotels-filter_city--active": isActive,
+								})}
+								key={i}>
+								{title}
+							</li>
+						);
+					})}
+
+					{activeTabKey === "destination" &&
+					citiesArr.map((city, i) => {
 							const { title, id } = city;
 							const isActive = state && state[activeTabKey].id === id;
 							return (
@@ -144,7 +169,7 @@ const HotelsFilter = ({ filterState, activeTabKey, handleTabClick }) => {
 					)}
 
 					{activeTabKey === "date" && (
-						<DateTab state={state} updateState={updateState} />
+						<DateTab durations={durations} state={state} updateState={updateState} />
 					)}
 
 					<div className={`${className}_content_btn-group`}>
@@ -213,7 +238,7 @@ const TravellersItem = ({ state, title, updateState }) => {
 	);
 };
 
-const DateTab = ({ state, updateState }) => {
+const DateTab = ({ durations, state, updateState }) => {
 	const className = "hotels-filter_date";
 	console.log(state);
 	const [startDate, setStartDate] = useState(
@@ -249,12 +274,33 @@ const DateTab = ({ state, updateState }) => {
 
 	console.log(startDate);
 
+	const [duration, setDuration] = useState(state.duration);
+
+	const durationsRadioBtns = [];
+	durations.forEach(item => {
+		durationsRadioBtns.push({
+			label: `${item} days`,
+			name: `${item} days`,
+			value: item,
+			checked: duration === item,
+		});
+	});
+
 	const handleRadioBtnClick = (btn) => {
 		console.log("handleRadioBtnClick", btn);
 		setDays(btn.value);
 		updateState({
 			key: "date",
 			value: { ...state.date, dateInterval: btn.value },
+		});
+	};
+
+	const handleDurationRadioBtnClick = (btn) => {
+		console.log("handleDurationRadioBtnClick", btn);
+		setDuration(btn.value);
+		updateState({
+			key: "duration",
+			value: btn.value,
 		});
 	};
 	return (
@@ -268,6 +314,19 @@ const DateTab = ({ state, updateState }) => {
 							<RadioButton
 								{...btn}
 								onClick={() => handleRadioBtnClick(btn)}
+								key={i}
+							/>
+						))}
+					</div>
+				</div>
+				<div className={`${className}_radio-btns`}>
+					<p className={`${className}_title`}>Duration</p>
+
+					<div className='row-bw-center'>
+						{durationsRadioBtns.map((btn, i) => (
+							<RadioButton
+								{...btn}
+								onClick={() => handleDurationRadioBtnClick(btn)}
 								key={i}
 							/>
 						))}

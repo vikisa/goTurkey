@@ -12,11 +12,10 @@ import {
 	Icons,
 	Button,
 	BookingForm,
-	hotelItem,
 	flightsArr,
 } from "../components/export";
 import useRouter from "use-react-router";
-import { getHotelById, flightsSearch, getHotelImages } from "./apiQueries";
+import { flightsSearch } from "./apiQueries";
 
 const HotelDetails = () => {
 	const className = "hotel-details";
@@ -29,30 +28,33 @@ const HotelDetails = () => {
 	const cardBottomElements = [
 		{
 			icon: <Icons.City />,
-			key: "centerDistance",
+			key: "destinatation-to-city",
+			unit: ' km'
 		},
 		{
 			icon: <Icons.Swimmer />,
-			key: "seaDistance",
+			key: "destinatation-to-beach",
+			unit: ' m'
 		},
 		{
 			icon: <Icons.BigPlane />,
-			key: "flyDistance",
+			key: "destinatation-to-airport",
+			unit: ' km'
 		},
 	];
 	const selectedFlightBlocks = [
 		{
 			title: "Flight detail",
-			subtitle: "title",
+			subtitle: "AirportRoute",
 			desc: "subtitle",
 		},
 		{
 			title: "Flight detail",
-			subtitle: "boarding",
+			subtitle: "MealName",
 		},
 		{
 			title: "Room type",
-			subtitle: "roomType",
+			subtitle: "RoomName",
 		},
 		{
 			title: "Transfer",
@@ -65,13 +67,38 @@ const HotelDetails = () => {
 	console.log("bookingDataLS", bookingDataLS);
 
 	// информация о конкретном отеле  с json
-	const [hotel, setHotel] = useState([]);
+	const hotel = JSON.parse(localStorage.getItem("hotelDetailsPageData"));
+
+	const flightsList = JSON.parse(localStorage.getItem('hotelListData')).filter(hotelItem => {
+		return hotelItem['HotelID'] === hotel['HotelID']
+	});
+	flightsList.forEach(flightItem => {
+		flightItem.transfer = 'Individual';
+
+		const dateFrom = new Date(flightItem['FlightDate']);
+		const dateFromFormat = `${dateFrom.getDate()}.${
+			(dateFrom.getMonth() + 1) < 10
+				? '0' + (dateFrom.getMonth() + 1)
+				: dateFrom.getMonth() + 1
+		}`;
+		const dateTo = new Date(flightItem['BackFlightDate']);
+		const dateToFormat = `${dateTo.getDate()}.${
+			(dateTo.getMonth() + 1) < 10
+				? '0' + (dateTo.getMonth() + 1)
+				: dateTo.getMonth() + 1
+		}`;
+		flightItem.date = `${dateFromFormat} - ${dateToFormat}`;
+
+		const difference = new Date(dateTo - dateFrom);
+		flightItem.subtitle = `${difference.getHours()}h ${difference.getMinutes()}m`;
+	});
+
 	// список рейсов с json
 	const [flights, setFlights] = useState([]);
 
 	const [formState, setFormState] = useState({
 		isOpen: pathname?.includes("purchase"), // открыта ли форма пассажира
-		selectedFlight: flightsArr[0] || {},
+		selectedFlight: flightsList[0] || {},
 	});
 
 	// выбор рейса (клик на кнопку book)
@@ -130,29 +157,6 @@ const HotelDetails = () => {
 	};
 
 	useEffect(() => {
-		setHotel(hotelItem); // удалить строку после подкл. к апи
-		setFlights(flightsArr); // удалить строку после подкл. к апи
-
-		// если надо будет запрашивать доп инфу о отеле по id
-		getHotelById(hotel.id).then(
-			(response) => {
-				console.log("getHotelImages", response);
-				setHotel(hotelItem);
-			},
-			(error) => {
-				console.error("Error while geocoding", error);
-			},
-		);
-
-		getHotelImages(hotel.id).then(
-			(response) => {
-				console.log("getHotelImages", response);
-			},
-			(error) => {
-				console.error("Error while geocoding", error);
-			},
-		);
-
 		const date = new Date(bookingDataLS.date.date);
 		const dateInterval = bookingDataLS.date.dateInterval;
 
@@ -215,9 +219,9 @@ const HotelDetails = () => {
 						visibleSlides={1}
 						naturalSlideWidth={100}
 						naturalSlideHeight={100}
-						totalSlides={hotel?.imgs?.length}>
+						totalSlides={hotel?.gallery?.length}>
 						<Slider>
-							{hotel?.imgs?.map((img, i) => (
+							{hotel?.gallery?.map((img, i) => (
 								<img
 									className={`${className}_card-img`}
 									src={img}
@@ -230,8 +234,8 @@ const HotelDetails = () => {
 					</CarouselProvider>
 
 					<div className={`${className}_card-header`}>
-						<h2 className={`${className}_card-header_title`}>{hotel.title}</h2>
-						<p className={`${className}_card-header_cities`}> {hotel.cities}</p>
+						<h2 className={`${className}_card-header_title`}>{hotel.HotelName}</h2>
+						<p className={`${className}_card-header_cities`}> {hotel['location-text']}</p>
 						{width <= 480 && formState.isOpen && (
 							<div className={`${className}_card-flight`}>
 								<span
@@ -243,16 +247,15 @@ const HotelDetails = () => {
 						)}
 					</div>
 
-					{true && (
-						<div className={`${className}_card-bottom`}>
-							{cardBottomElements.map((item, i) => (
-								<div className='row-bw-center' key={i}>
-									{item.icon}
-									{hotel && hotel[item.key]}
-								</div>
-							))}
-						</div>
-					)}
+					<div className={`${className}_card-bottom`}>
+						{cardBottomElements.map((item, i) => (
+							<div className='row-bw-center' key={i}>
+								{item.icon}
+								{hotel && hotel[item.key]}
+								{item.unit}
+							</div>
+						))}
+					</div>
 
 					{formState.isOpen && width > 480 && (
 						<div className={`${className}_card-flight`}>
@@ -275,7 +278,7 @@ const HotelDetails = () => {
 								className={cx(`${className}_desc-block_text`, {
 									"hotel-details_desc-block_text--visible": isDescOpen,
 								})}>
-								<p ref={descRef}> {hotel.desc}</p>
+								<p ref={descRef}> {hotel['description-long']}</p>
 							</div>
 							{!isDescOpen && (
 								<p
@@ -312,14 +315,14 @@ const HotelDetails = () => {
 							More dates to this hotel
 						</div>
 						<section className={`${className}_more-dates`}>
-							{flights?.map((flight, i) => {
+							{flightsList?.map((flight, i) => {
 								const { title, subtitle, price, date } = flight;
 								return (
 									<div className={`${className}_more-dates_item`} key={i}>
 										<div className='row-bw-center'>
 											<div>
 												<p className={`${className}_more-dates_item-cities`}>
-													{title}
+													{flight['AirportRoute']}
 												</p>
 												<p className={`${className}_more-dates_item-stops`}>
 													{subtitle}
@@ -327,7 +330,7 @@ const HotelDetails = () => {
 											</div>
 											<div>
 												<p className={`${className}_more-dates_item-price`}>
-													{`${price}$`}
+													{`${flight['PackagePrice']}$`}
 												</p>
 												<p className={`${className}_more-dates_item-date`}>
 													{date}
@@ -350,7 +353,7 @@ const HotelDetails = () => {
 						<div className={`${className}_choice`}>
 							<div>
 								<p
-									className={`${className}_choice-price price`}>{`${formState.selectedFlight.price}$`}</p>
+									className={`${className}_choice-price price`}>{`${formState.selectedFlight['PackagePrice']}$`}</p>
 								<p className={`${className}_choice-date`}>
 									{formState.selectedFlight.date}
 								</p>

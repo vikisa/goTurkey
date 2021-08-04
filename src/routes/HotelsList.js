@@ -4,14 +4,13 @@ import useRouter from "use-react-router";
 import ReactPaginate from "react-paginate";
 import { useWindowSize, useLockBodyScroll } from "react-use";
 
-import { getAllHotels } from "./apiQueries";
+import {getGetPackages, getDurationList, getOriginList} from "./apiQueries";
 import {
 	BreadCrumbs,
 	Icons,
 	FilterPopup,
 	HotelsFilter,
 	getHotelsArr,
-	citiesArr,
 } from "../components/export";
 
 export const HotelsList = () => {
@@ -20,9 +19,46 @@ export const HotelsList = () => {
 	const { width } = useWindowSize();
 	const isMobile = width <= 580;
 
+	const [originList, setOriginList] = useState([{ title: "", id: "", city_code: "" }]);
+	useEffect(() => {
+		getOriginList().then(
+			(response) => {
+				const originListData = [];
+				response['origin-list'].active.forEach((listItem, i) => {
+					originListData.push({
+						title: listItem,
+						id: i + 1,
+						city_code: "RIX"
+					})
+				});
+				setOriginList(originListData);
+			},
+			(error) => {
+				console.error("Error getting origin list", error);
+			},
+		);
+	}, []);
+
+	const [durations, setDurations] = useState([0]);
+	useEffect(() => {
+		getDurationList().then(
+			(response) => {
+				setDurations(response['duration-list']);
+			},
+			(error) => {
+				console.error("Error getting durations data", error);
+			},
+		);
+	}, []);
+
 	const bookingDataLS = JSON.parse(localStorage.getItem("bookingData")) || {
-		origin: citiesArr[0],
-		destination: citiesArr[1],
+		origin: originList[0],
+		destination: {
+			title: 'Turkey',
+			id: 2,
+			city_code: "RIX"
+		},
+		duration: 7,
 		date: {
 			date: new Date(),
 			dateInterval: 5,
@@ -40,6 +76,18 @@ export const HotelsList = () => {
 	const [filterActiveTab, setFilterActiveTab] = useState(false);
 	const [filterState, setFilterState] = useState(bookingDataLS);
 	useLockBodyScroll(isMobile && filterActiveTab);
+
+	useEffect(() => {
+		const bookingDataLSNew = bookingDataLS;
+		bookingDataLSNew.origin = originList[0];
+		setFilterState(bookingDataLSNew);
+	}, [originList]);
+
+	useEffect(() => {
+		const bookingDataLSNew = bookingDataLS;
+		bookingDataLSNew.duration = durations[0];
+		setFilterState(bookingDataLSNew);
+	}, [durations]);
 
 	const [isFilterPopupOpen, setIsFilterPopupOpen] = useState(false);
 	const handleTabClick = ({ tab, value }) => {
@@ -104,6 +152,12 @@ export const HotelsList = () => {
 		sliceHotelsArr({ hotels, page: newPage });
 	};
 
+	const getFormatDate = (date) => {
+		return `${date.getFullYear()}-` +
+		`${(date.getMonth() + 1) < 10 ? ('0' + (date.getMonth() + 1)) : date.getMonth()}-` +
+		`${date.getDate() < 10 ? ('0' + date.getDate()) : date.getDate()}`
+	};
+
 	// клик по карточке
 	const handleHotelCardClick = ({ hotel }) => {
 		const link = `/hotel-details/${hotel.id}`;
@@ -111,10 +165,7 @@ export const HotelsList = () => {
 
 		localStorage.setItem(
 			"hotelDetailsPageData",
-			JSON.stringify({
-				title: hotel.title,
-				link,
-			}),
+			JSON.stringify(hotel),
 		);
 
 		localStorage.setItem(
@@ -124,23 +175,39 @@ export const HotelsList = () => {
 	};
 
 	useEffect(() => {
-		const hotelsArr = getHotelsArr(25); // удалить строку после подкл. к апи
-		setHotels(hotelsArr); // удалить строку после подкл. к апи
-		sliceHotelsArr({ hotels: hotelsArr, page }); // удалить строку после подкл. к апи
+		const beginDate = new Date(filterState.date.date);
+		const beginDateFormat = getFormatDate(beginDate)
+
+		let endDate = new Date();
+		endDate.setDate(beginDate.getDate() + filterState.duration);
+		const endDateFormat = getFormatDate(endDate);
 
 		// запрос списка отелей
-		getAllHotels().then(
+		const data = JSON.stringify({
+			beginDate: beginDateFormat,
+			endDate: endDateFormat,
+			beginNight: filterState.duration,
+			endNight: filterState.duration,
+			adultNum: filterState.travellers.adults,
+			kidNum: filterState.travellers.children
+		});
+
+		getGetPackages(data).then(
 			(response) => {
-				//	const hotelsArr = getHotelsArr(25); //response.result ||
-				setHotels(hotelsArr);
-				sliceHotelsArr({ hotels: hotelsArr, page });
-				console.log("RESPONSE", response);
+				const keys = Object.keys(response);
+				const hotelsList = response[keys[0]];
+				hotelsList.forEach((hotelItem, i) => {
+					hotelItem.id = i + 1;
+				});
+				setHotels(hotelsList);
+				localStorage.setItem('hotelListData', JSON.stringify(hotelsList));
+				sliceHotelsArr({ hotels: hotelsList, page });
 			},
 			(error) => {
 				console.error("Error while geocoding", error);
 			},
 		);
-	}, []);
+	}, [filterState]);
 
 	useEffect(() => {
 		window.scrollTo(0, 0);
@@ -150,6 +217,8 @@ export const HotelsList = () => {
 		<div className={`container-s ${className}`}>
 			<FilterPopup isOpen={isFilterPopupOpen}>
 				<HotelsFilter
+					originList={originList}
+					durations={durations}
 					filterState={filterState}
 					activeTabKey={filterActiveTab}
 					handleTabClick={handleTabClick}
@@ -180,6 +249,8 @@ export const HotelsList = () => {
 
 			{/* список фильтров */}
 			<HotelsFilter
+				originList={originList}
+				durations={durations}
 				filterState={filterState}
 				activeTabKey={isMobile ? false : filterActiveTab}
 				handleTabClick={handleTabClick}
@@ -237,7 +308,19 @@ export default HotelsList;
 
 const HotelCard = ({ hotel, row, handleHotelCardClick }) => {
 	const className = "hotels-list_card";
-	const { img, title, cities, date, price } = hotel;
+	const dateFrom = new Date(hotel['FlightDate']);
+	const dateFromFormat = `${dateFrom.getDate()}.${
+		(dateFrom.getMonth() + 1) < 10
+			? '0' + (dateFrom.getMonth() + 1)
+			: dateFrom.getMonth() + 1
+	}`;
+	const dateTo = new Date(hotel['BackFlightDate']);
+	const dateToFormat = `${dateTo.getDate()}.${
+		(dateTo.getMonth() + 1) < 10
+			? '0' + (dateTo.getMonth() + 1)
+			: dateTo.getMonth() + 1
+	}`;
+	const date = `${dateFromFormat} - ${dateToFormat}`;
 
 	return (
 		<div
@@ -246,16 +329,16 @@ const HotelCard = ({ hotel, row, handleHotelCardClick }) => {
 				"hotels-list_card-row": row,
 				"hotels-list_card-col": !row,
 			})}>
-			<img className={`${className}-img`} src={img} alt='hotel preview' />
+			<img className={`${className}-img`} src={hotel['title-image']} alt='hotel preview' />
 			<div className={`${className}-content`}>
 				<div className={`${className}-content_top`}>
-					<h3 className={`${className}-title`}>{`${title} №${hotel.id}`}</h3>
-					<p className={`${className}-subtitle`}> {cities} </p>
+					<h3 className={`${className}-title`}>{`${hotel['HotelName']}`}</h3>
+					<p className={`${className}-subtitle`}> {hotel['location-text']} </p>
 				</div>
 
 				<div className={`${className}-content_bottom`}>
 					<p className={`${className}-date`}>{date}</p>
-					<p className={`${className}-price`}>{price}</p>
+					<p className={`${className}-price`}>{hotel['PackagePrice']}$</p>
 				</div>
 			</div>
 		</div>
