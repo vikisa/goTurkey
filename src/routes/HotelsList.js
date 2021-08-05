@@ -194,14 +194,17 @@ export const HotelsList = () => {
 
 		getGetPackages(data).then(
 			(response) => {
+				console.log('hotelsList response',response)
 				const keys = Object.keys(response);
 				const hotelsList = response[keys[0]];
-				hotelsList.forEach((hotelItem, i) => {
-					hotelItem.id = i + 1;
-				});
-				setHotels(hotelsList);
-				localStorage.setItem('hotelListData', JSON.stringify(hotelsList));
-				sliceHotelsArr({ hotels: hotelsList, page });
+				if (typeof hotelsList !== 'string') {
+					hotelsList.forEach((hotelItem, i) => {
+						hotelItem.id = i + 1;
+					});
+					setHotels(hotelsList);
+					localStorage.setItem('hotelListData', JSON.stringify(hotelsList));
+					sliceHotelsArr({ hotels: hotelsList, page });
+				}
 			},
 			(error) => {
 				console.error("Error while geocoding", error);

@@ -115,7 +115,7 @@ export const getDurationList = () => postFetchApi({ url: "commands/microsite" },
 });
 
 export const getGetPackages = (
-	data = "{'beginDate':'2021-08-04','endDate':'2022-08-13', 'beginNight':7, 'endNight':7, 'adultNum':2, 'kidNum':0}"
+	data = "{'beginDate':'2021-09-01','endDate':'2022-09-01', 'beginNight':7, 'endNight':7, 'adultNum':2, 'kidNum':0, 'filter':true, 'sort':true}"
 ) => postFetchApi({ url: "commands/microsite" }, {
 	command: "GET_PACKAGES",
 	data: data
