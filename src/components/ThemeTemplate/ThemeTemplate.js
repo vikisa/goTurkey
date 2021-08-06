@@ -28,7 +28,7 @@ const ThemeTemplate = ({
 			<div className='container-l theme-slider'>
 				<div
 					onClick={goToHotelsListByTheme}
-					className={`container-m theme-card theme-card--${className} `}>
+					className={`container-m theme-card`}>
 					<img className='theme-card_img' src={theme.img} alt='theme' />
 					<div className={`theme-card_border`} />
 
@@ -86,7 +86,7 @@ const Slide = ( slide ) => {
 		<div onClick={slide.goToHotelsListByTheme} className={`${className}`}>
 			<img className={`${className}_img`} src={slide['title-image']} alt='hotel preview' />
 			<div className={`${className}_content`}>
-				<h3 className={`${className}_title`}>{`${slide.name} ${slide.index}`}</h3>
+				<h3 className={`${className}_title`}>{`${slide.name}`}</h3>
 				<div className={`${className}_content-bottom`}>
 					<h4 className={`${className}_subtitle`}> {slide['location-text']} </h4>
 					<p className={`${className}_price`}> {slide['price-static'] + '$'} </p>

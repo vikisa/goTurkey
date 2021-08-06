@@ -64,7 +64,8 @@ export const Main = () => {
 				let homePageStaticData = Object.assign({}, homePageStatic);
 				let key;
 				for (key in homePageStatic)
-					homePageStaticData[key] = homePageStatic[key];
+					homePageStaticData[key] = mainPageData[key];
+
 				setHomePageStatic(homePageStaticData);
 
 				setStyle({
@@ -87,7 +88,6 @@ export const Main = () => {
 
 					const banner = (i === 2) ? ads[0] :
 						(i === 4) ? ads[1] : null;
-
 
 					themesData.push({
 						banner: banner,

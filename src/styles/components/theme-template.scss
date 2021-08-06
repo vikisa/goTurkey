@@ -28,7 +28,7 @@
     overflow: hidden;
 
     &_border {
-        border: 8px solid rgba($color: $light-orange, $alpha: 0.6);
+        //border: 8px solid rgba($color: $light-orange, $alpha: 0.6);
         @include position($top: 0, $left: 0, $bottom: 0, $right: 0);
         z-index: 3;
     }
