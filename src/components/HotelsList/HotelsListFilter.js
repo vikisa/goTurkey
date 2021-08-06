@@ -7,7 +7,7 @@ import DatePicker from "react-datepicker";
 import { subMonths, addMonths } from "date-fns";
 
 import "react-datepicker/dist/react-datepicker.css";
-const HotelsFilter = ({originList, durations, filterState, activeTabKey, handleTabClick }) => {
+const HotelsFilter = ({originList, destinationList, durations, filterState, activeTabKey, handleTabClick }) => {
 	const className = "hotels-filter";
 
 	const [state, setState] = useState(filterState);
@@ -73,6 +73,7 @@ const HotelsFilter = ({originList, durations, filterState, activeTabKey, handleT
 	useEffect(() => {
 		const filtersNew = filters;
 		filtersNew[0].value = filterState.origin.title;
+		filtersNew[1].value = filterState.destination.title;
 		setFilters(filtersNew);
 		closeTab();
 	}, [filterState]);
@@ -89,7 +90,7 @@ const HotelsFilter = ({originList, durations, filterState, activeTabKey, handleT
 				{filters.map((tab, i) => {
 					const { icon, title, value, key } = tab;
 					const isTabOpen = activeTabKey === key;
-					const handleClick = key === 'destination' ? null : () => handleTabClick({ tab });
+					const handleClick = () => handleTabClick({ tab });
 					return (
 						<li
 							onClick={handleClick}
@@ -136,7 +137,7 @@ const HotelsFilter = ({originList, durations, filterState, activeTabKey, handleT
 					})}
 
 					{activeTabKey === "destination" &&
-					citiesArr.map((city, i) => {
+					destinationList.map((city, i) => {
 							const { title, id } = city;
 							const isActive = state && state[activeTabKey].id === id;
 							return (

@@ -4,7 +4,7 @@ import useRouter from "use-react-router";
 import ReactPaginate from "react-paginate";
 import { useWindowSize, useLockBodyScroll } from "react-use";
 
-import {getGetPackages, getDurationList, getOriginList} from "./apiQueries";
+import {getGetPackages, getDurationList, getOriginList, getDestinationList} from "./apiQueries";
 import {
 	BreadCrumbs,
 	Icons,
@@ -51,6 +51,39 @@ export const HotelsList = () => {
 		);
 	}, []);
 
+	const [destinationList, setDestinationList] = useState([{ title: "", id: "", city_code: "" }]);
+	useEffect(() => {
+		getDestinationList().then(
+			(response) => {
+				const destinationListData = [];
+				let i = 1;
+				response['destination-list'].active.forEach((listItem) => {
+					destinationListData.push({
+						title: listItem,
+						id: i,
+						city_code: "RIX",
+						disable: false
+					});
+					i += 1;
+				});
+				response['destination-list'].disable.forEach((listItem) => {
+					destinationListData.push({
+						title: listItem,
+						id: i,
+						city_code: "RIX",
+						disable: true
+					});
+					i += 1;
+				});
+				setDestinationList(destinationListData);
+				console.log('getDestinationList destinationListData',destinationListData)
+			},
+			(error) => {
+				console.error("Error getting destination list", error);
+			},
+		);
+	}, []);
+
 	const [durations, setDurations] = useState([0]);
 	useEffect(() => {
 		getDurationList().then(
@@ -65,11 +98,7 @@ export const HotelsList = () => {
 
 	const bookingDataLS = JSON.parse(localStorage.getItem("bookingData")) || {
 		origin: originList[0],
-		destination: {
-			title: 'Turkey',
-			id: 2,
-			city_code: "RIX"
-		},
+		destination: destinationList[0],
 		duration: 7,
 		date: {
 			date: new Date(),
@@ -94,6 +123,12 @@ export const HotelsList = () => {
 		bookingDataLSNew.origin = originList[0];
 		setFilterState(bookingDataLSNew);
 	}, [originList]);
+
+	useEffect(() => {
+		const bookingDataLSNew = bookingDataLS;
+		bookingDataLSNew.destination = destinationList[0];
+		setFilterState(bookingDataLSNew);
+	}, [destinationList]);
 
 	useEffect(() => {
 		const bookingDataLSNew = bookingDataLS;
@@ -233,6 +268,7 @@ export const HotelsList = () => {
 			<FilterPopup isOpen={isFilterPopupOpen}>
 				<HotelsFilter
 					originList={originList}
+					destinationList={destinationList}
 					durations={durations}
 					filterState={filterState}
 					activeTabKey={filterActiveTab}
@@ -265,6 +301,7 @@ export const HotelsList = () => {
 			{/* список фильтров */}
 			<HotelsFilter
 				originList={originList}
+				destinationList={destinationList}
 				durations={durations}
 				filterState={filterState}
 				activeTabKey={isMobile ? false : filterActiveTab}

@@ -109,6 +109,11 @@ export const getOriginList = () => postFetchApi({ url: "commands/microsite" }, {
 	data: ""
 });
 
+export const getDestinationList = () => postFetchApi({ url: "commands/microsite" }, {
+	command: "GET_DESTINATION_LIST",
+	data: ""
+});
+
 export const getDurationList = () => postFetchApi({ url: "commands/microsite" }, {
 	command: "GET_DURATIONS_LIST",
 	data: ""
