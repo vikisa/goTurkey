@@ -24,12 +24,24 @@ export const HotelsList = () => {
 		getOriginList().then(
 			(response) => {
 				const originListData = [];
-				response['origin-list'].active.forEach((listItem, i) => {
+				let i = 1;
+				response['origin-list'].active.forEach((listItem) => {
 					originListData.push({
 						title: listItem,
-						id: i + 1,
-						city_code: "RIX"
-					})
+						id: i,
+						city_code: "RIX",
+						disable: false
+					});
+					i += 1;
+				});
+				response['origin-list'].disable.forEach((listItem) => {
+					originListData.push({
+						title: listItem,
+						id: i,
+						city_code: "RIX",
+						disable: true
+					});
+					i += 1;
 				});
 				setOriginList(originListData);
 			},

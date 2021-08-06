@@ -116,16 +116,19 @@ const HotelsFilter = ({originList, durations, filterState, activeTabKey, handleT
 				<ul className={`${className}_content`}>
 					{activeTabKey === "origin" &&
 					originList.map((city, i) => {
-						const { title, id } = city;
+						const { title, id, disable } = city;
 						const isActive = state && state[activeTabKey].id === id;
 						return (
 							<li
-								onClick={() =>
-									updateState({ key: activeTabKey, value: city })
-								}
+								onClick={() => disable
+                  ? null
+                  : updateState({ key: activeTabKey, value: city })
+                }
 								className={cx(`${className}_city`, {
 									"hotels-filter_city--active": isActive,
-								})}
+								}, {
+								  "hotels-filter_city--disabled": disable
+                })}
 								key={i}>
 								{title}
 							</li>

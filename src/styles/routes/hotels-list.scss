@@ -108,6 +108,11 @@
             &--active {
                 background-color: $dividers;
             }
+
+            &--disabled {
+                cursor: default;
+                color: #a4a4a4;
+            }
         }
 
         &_travellers {
