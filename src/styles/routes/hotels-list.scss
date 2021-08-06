@@ -163,34 +163,26 @@
                 margin-bottom: 18px;
             }
 
-            &_header {
+            &-calendar {
+                padding-top: 24px;
                 width: 100%;
-                border-bottom: 1px solid $dividers;
-                padding: 32px 0 12px 0;
-                margin-bottom: 28px;
+                max-width: 338px;
+            }
+
+            &_filters {
+                width: 100%;
+                border-top: 1px solid $dividers;
+                padding-top: 24px;
                 font-family: 'Gilroy-700', sans-serif;
             }
 
             &_radio-btns {
                 max-width: 338px;
                 margin: 0 auto;
-                // @include row-bw-center;
-                &:nth-of-type(2) {
-                    margin-top: 27px;
 
-                    .row-bw-center {
-                        justify-content: left;
-
-                        .radio-btn_wrapper {
-                            margin-right: 25px;
-                        }
-                    }
+                .radio-btn_wrapper {
+                    margin-right: 24px;
                 }
-            }
-
-            &-calendar {
-                width: 100%;
-                max-width: 338px;
             }
         }
 }

@@ -248,33 +248,12 @@ const DateTab = ({ durations, state, updateState }) => {
 	const [startDate, setStartDate] = useState(
 		new Date(state.date.date) || new Date(),
 	);
-	const [days, setDays] = useState(state.date.dateInterval);
 
 	const handleDatechange = (date) => {
 		console.log(date);
 		setStartDate(date);
 		updateState({ key: "date", value: { ...state.date, date } });
 	};
-	const radioBtns = [
-		{
-			label: "-/+ 3 Days",
-			name: "3-days",
-			value: 3,
-			checked: days === 3,
-		},
-		{
-			label: "-/+ 5 Days",
-			name: "5-days",
-			value: 5,
-			checked: days === 5,
-		},
-		{
-			label: "-/+ 10 Days",
-			name: "10-days",
-			value: 10,
-			checked: days === 10,
-		},
-	];
 
 	console.log(startDate);
 
@@ -290,15 +269,6 @@ const DateTab = ({ durations, state, updateState }) => {
 		});
 	});
 
-	const handleRadioBtnClick = (btn) => {
-		console.log("handleRadioBtnClick", btn);
-		setDays(btn.value);
-		updateState({
-			key: "date",
-			value: { ...state.date, dateInterval: btn.value },
-		});
-	};
-
 	const handleDurationRadioBtnClick = (btn) => {
 		console.log("handleDurationRadioBtnClick", btn);
 		setDuration(btn.value);
@@ -309,35 +279,6 @@ const DateTab = ({ durations, state, updateState }) => {
 	};
 	return (
 		<div className={`${className}`}>
-			<div className={`${className}_header`}>
-				<div className={`${className}_radio-btns`}>
-					<p className={`${className}_title`}>Departure Date</p>
-
-					<div className='row-bw-center'>
-						{radioBtns.map((btn, i) => (
-							<RadioButton
-								{...btn}
-								onClick={() => handleRadioBtnClick(btn)}
-								key={i}
-							/>
-						))}
-					</div>
-				</div>
-				<div className={`${className}_radio-btns`}>
-					<p className={`${className}_title`}>Duration</p>
-
-					<div className='row-bw-center'>
-						{durationsRadioBtns.map((btn, i) => (
-							<RadioButton
-								{...btn}
-								onClick={() => handleDurationRadioBtnClick(btn)}
-								key={i}
-							/>
-						))}
-					</div>
-				</div>
-			</div>
-
 			<div className={`${className}-calendar`}>
 				<DatePicker
 					selected={startDate}
@@ -347,6 +288,22 @@ const DateTab = ({ durations, state, updateState }) => {
 					minDate={subMonths(new Date(), 5)}
 					maxDate={addMonths(new Date(), 6)}
 				/>
+			</div>
+
+			<div className={`${className}_filters`}>
+				<div className={`${className}_radio-btns`}>
+					<p className={`${className}_title`}>Duration</p>
+
+					<div className='row-start-start'>
+						{durationsRadioBtns.map((btn, i) => (
+							<RadioButton
+								{...btn}
+								onClick={() => handleDurationRadioBtnClick(btn)}
+								key={i}
+							/>
+						))}
+					</div>
+				</div>
 			</div>
 		</div>
 	);
