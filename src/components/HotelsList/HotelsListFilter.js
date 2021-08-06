@@ -138,7 +138,7 @@ const HotelsFilter = ({originList, destinationList, durations, filterState, acti
 
 					{activeTabKey === "destination" &&
 					destinationList.map((city, i) => {
-							const { title, id } = city;
+							const { title, id, disable } = city;
 							const isActive = state && state[activeTabKey].id === id;
 							return (
 								<li
@@ -147,7 +147,9 @@ const HotelsFilter = ({originList, destinationList, durations, filterState, acti
 									}
 									className={cx(`${className}_city`, {
 										"hotels-filter_city--active": isActive,
-									})}
+									}, {
+                    "hotels-filter_city--disabled": disable
+                  })}
 									key={i}>
 									{title}
 								</li>

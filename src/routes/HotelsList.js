@@ -76,7 +76,6 @@ export const HotelsList = () => {
 					i += 1;
 				});
 				setDestinationList(destinationListData);
-				console.log('getDestinationList destinationListData',destinationListData)
 			},
 			(error) => {
 				console.error("Error getting destination list", error);

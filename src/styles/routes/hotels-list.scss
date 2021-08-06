@@ -29,18 +29,13 @@
         position: relative;
         z-index: 2;
         &--open {
-            // position: sticky;
-            // z-index: 2;
+            position: sticky;
+            top: 0;
+            background-color: #F5F6F6;
         }
         &_tabs {
             @include row-bw-center;
             border-bottom: 2px solid $red;
-        
-            &--open {
-                position: sticky;
-                top: 0;
-                z-index: 1;
-            }
         }
 
         &_item {
