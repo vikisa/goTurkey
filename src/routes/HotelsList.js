@@ -314,6 +314,7 @@ export const HotelsList = () => {
 
 			{/* карточки  */}
 			<div className={`${className}-list`}>
+				{!hotelsPage.length && <Icons.Preloader/>}
 				{hotelsPage.map((hotel, i) => {
 					return (
 						<HotelCard
@@ -327,6 +328,7 @@ export const HotelsList = () => {
 			</div>
 
 			{/* пагинация */}
+			{(!!hotels.length &&
 			<div className={`${className}-pagination`}>
 				<ReactPaginate
 					previousLabel={
@@ -350,7 +352,7 @@ export const HotelsList = () => {
 					previousClassName='pagination_prev'
 					nextClassName='pagination_next'
 				/>
-			</div>
+			</div>)}
 		</div>
 	);
 };
