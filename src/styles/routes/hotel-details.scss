@@ -17,17 +17,24 @@
         }
         &-img {
             height: 275px;
-            width: 100%;
+            width: 730px;
+            object-fit: cover;
         }
         &-header {
+            display: flex;
+            flex-wrap: wrap;
             padding: 21px 16px 25px 16px;
             font-size: 16px;
             border-bottom: 1px solid $dividers;
             width: 100%;
             &_title {
+                width: 100%;
                 font-size: 27px;
                 font-family: 'Gilroy-700', sans-serif;
                 margin-bottom: 12px;
+            }
+            &_cities {
+                margin-right: 25px;
             }
         }
         &-bottom {
@@ -61,7 +68,6 @@
     }
     &_desc-block {
         font-size: 16px;
-        max-width: 540px;
         margin: 0 auto 32px auto;
         &_text {
             margin-bottom: 5px;
@@ -183,7 +189,7 @@
         width: max-content;
         margin: 0 auto;
         &-price {
-            margin-bottom: 10px;
+            //margin-bottom: 10px;
             font-size: 30px;
             line-height: 30px;
             text-align: right;
@@ -212,6 +218,17 @@
     .btn {
         width: 100%;
         margin-top: 18px;
+    }
+}
+
+@media(max-width: 768px) {
+    .hotel-details {
+        &_card {
+            &-img {
+                width: 100%;
+                overflow: hidden;
+            }
+        }
     }
 }
 

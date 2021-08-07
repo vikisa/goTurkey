@@ -44,12 +44,12 @@ const HotelDetails = () => {
 	];
 	const selectedFlightBlocks = [
 		{
-			title: "Flight detail",
+			title: "Boarding",
 			subtitle: "AirportRoute",
 			desc: "subtitle",
 		},
 		{
-			title: "Flight detail",
+			title: "Boarding",
 			subtitle: "MealName",
 		},
 		{
@@ -103,7 +103,8 @@ const HotelDetails = () => {
 
 	// выбор рейса (клик на кнопку book)
 	const handleBookClick = () => {
-		history.push(`/hotel-details/${hotel?.id}/purchase`);
+		const win = window.open(`/hotel-details/${hotel?.id}/purchase`, "_blank");
+		win.focus();
 
 		localStorage.setItem(
 			"hotelDetailsPageData",
@@ -158,12 +159,12 @@ const HotelDetails = () => {
 
 	useEffect(() => {
 		const date = new Date(bookingDataLS.date.date);
-		const dateInterval = bookingDataLS.date.dateInterval;
+		const dateDuration = bookingDataLS.date.duration;
 
 		const date_from = encodeURIComponent(
 			format(
 				sub(date, {
-					days: dateInterval,
+					days: dateDuration,
 				}),
 				"dd/mm/yyyy",
 			),
@@ -172,7 +173,7 @@ const HotelDetails = () => {
 		const date_to = encodeURIComponent(
 			format(
 				add(date, {
-					days: dateInterval,
+					days: dateDuration,
 				}),
 				"dd/mm/yyyy",
 			),
@@ -193,6 +194,8 @@ const HotelDetails = () => {
 			},
 		);
 	}, []);
+
+	const [descriptionText, setDescriptionText] = useState(hotel['description-short']);
 
 	useEffect(() => {
 		window.scrollTo(0, 0);
@@ -236,6 +239,9 @@ const HotelDetails = () => {
 					<div className={`${className}_card-header`}>
 						<h2 className={`${className}_card-header_title`}>{hotel.HotelName}</h2>
 						<p className={`${className}_card-header_cities`}> {hotel['location-text']}</p>
+						<p className={`${className}_card-header_dates`}>
+							{formState.selectedFlight.date}
+						</p>
 						{width <= 480 && formState.isOpen && (
 							<div className={`${className}_card-flight`}>
 								<span
@@ -278,15 +284,26 @@ const HotelDetails = () => {
 								className={cx(`${className}_desc-block_text`, {
 									"hotel-details_desc-block_text--visible": isDescOpen,
 								})}>
-								<p ref={descRef}> {hotel['description-long']}</p>
+								<p ref={descRef}>{descriptionText}</p>
 							</div>
 							{!isDescOpen && (
 								<p
-									onClick={() => setIsDescOpen(true)}
+									onClick={() => { setIsDescOpen(true); setDescriptionText(hotel['description-long']); }}
 									className={`${className}_desc-block_more`}>
 									<span>More</span> <Icons.DropArrow />
 								</p>
 							)}
+						</section>
+
+						<section className={`${className}_desc-block`}>
+							<div className={`${className}_choice`}>
+								<div>
+									<p
+										className={`${className}_choice-price price`}>{`${formState.selectedFlight['PackagePrice']}$`}</p>
+								</div>
+
+								<Button text='Book' onClick={handleBookClick} />
+							</div>
 						</section>
 
 						<section className={`${className}_flight-block`}>
@@ -349,18 +366,6 @@ const HotelDetails = () => {
 								);
 							})}
 						</section>
-
-						<div className={`${className}_choice`}>
-							<div>
-								<p
-									className={`${className}_choice-price price`}>{`${formState.selectedFlight['PackagePrice']}$`}</p>
-								<p className={`${className}_choice-date`}>
-									{formState.selectedFlight.date}
-								</p>
-							</div>
-
-							<Button text='Book' onClick={handleBookClick} />
-						</div>
 					</div>
 				)}
 				{formState.isOpen && (
