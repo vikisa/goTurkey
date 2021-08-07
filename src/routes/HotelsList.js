@@ -10,7 +10,6 @@ import {
 	Icons,
 	FilterPopup,
 	HotelsFilter,
-	getHotelsArr,
 } from "../components/export";
 
 export const HotelsList = () => {
@@ -18,6 +17,7 @@ export const HotelsList = () => {
 	const { history } = useRouter();
 	const { width } = useWindowSize();
 	const isMobile = width <= 580;
+	const [isLoading, setIsLoading] = useState(true);
 
 	const [originList, setOriginList] = useState([{ title: "", id: "", city_code: "" }]);
 	useEffect(() => {
@@ -221,6 +221,7 @@ export const HotelsList = () => {
 	};
 
 	useEffect(() => {
+		setIsLoading(true);
 		const beginDate = new Date(filterState.date.date);
 		const beginDateFormat = getFormatDate(beginDate)
 
@@ -247,9 +248,15 @@ export const HotelsList = () => {
 					hotelsList.forEach((hotelItem, i) => {
 						hotelItem.id = i + 1;
 					});
-					setHotels(hotelsList);
-					localStorage.setItem('hotelListData', JSON.stringify(hotelsList));
-					sliceHotelsArr({ hotels: hotelsList, page });
+					const filteredHotelsData = filterState.destination.title === ''
+						? hotelsList
+						: hotelsList.filter(hotelItem => {
+							return hotelItem['resort'] === filterState.destination.title;
+						});
+					setHotels(filteredHotelsData);
+					localStorage.setItem('hotelListData', JSON.stringify(filteredHotelsData));
+					sliceHotelsArr({ hotels: filteredHotelsData, page });
+					setIsLoading(false);
 				}
 			},
 			(error) => {
@@ -314,8 +321,8 @@ export const HotelsList = () => {
 
 			{/* карточки  */}
 			<div className={`${className}-list`}>
-				{!hotelsPage.length && <Icons.Preloader/>}
-				{hotelsPage.map((hotel, i) => {
+				{isLoading && <Icons.Preloader/>}
+				{!isLoading && hotelsPage.map((hotel, i) => {
 					return (
 						<HotelCard
 							handleHotelCardClick={() => handleHotelCardClick({ hotel })}
@@ -328,7 +335,7 @@ export const HotelsList = () => {
 			</div>
 
 			{/* пагинация */}
-			{(!!hotels.length &&
+			{(!isLoading && hotelsPage.length > 0 &&
 			<div className={`${className}-pagination`}>
 				<ReactPaginate
 					previousLabel={
