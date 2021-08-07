@@ -24,7 +24,10 @@ const HotelsFilter = ({originList, destinationList, durations, filterState, acti
 	};
 
 	let date = new Date(filterState.date.date);
-	const formattedDate = format(date, "MMM dd");
+	const getFormattedDate = (selectedDate) => {
+		const newDate = new Date(selectedDate)
+		return selectedDate ? format(newDate, "MMM dd") : format(date, "MMM dd");
+	};
 
 	const getTravellersTitle = () => {
 		const travellers = filterState.travellers;
@@ -59,7 +62,7 @@ const HotelsFilter = ({originList, destinationList, durations, filterState, acti
 		{
 			icon: <Icons.Calendar />,
 			title: "Date",
-			value: `${formattedDate} +/- ${filterState.date.dateInterval}d`,
+			value: `${getFormattedDate(filterState.date.date)} - ${filterState.date.duration} days`,
 			key: "date",
 		},
 		{
@@ -74,6 +77,8 @@ const HotelsFilter = ({originList, destinationList, durations, filterState, acti
 		const filtersNew = filters;
 		filtersNew[0].value = filterState.origin.title;
 		filtersNew[1].value = filterState.destination.title;
+		filtersNew[2].value = `${getFormattedDate(filterState.date.date)} - ${filterState.date.duration} days`;
+		filtersNew[3].value = getTravellersTitle();
 		setFilters(filtersNew);
 		closeTab();
 	}, [filterState]);
@@ -252,15 +257,11 @@ const DateTab = ({ durations, state, updateState }) => {
 	);
 
 	const handleDatechange = (date) => {
-		console.log(date);
 		setStartDate(date);
 		updateState({ key: "date", value: { ...state.date, date } });
 	};
 
-	console.log(startDate);
-
-	const [duration, setDuration] = useState(state.duration);
-
+	const [duration, setDuration] = useState(state.date.duration);
 	const durationsRadioBtns = [];
 	durations.forEach(item => {
 		durationsRadioBtns.push({
@@ -270,15 +271,25 @@ const DateTab = ({ durations, state, updateState }) => {
 			checked: duration === item,
 		});
 	});
+	const [durationsData, setDurationsData] = useState(durationsRadioBtns);
 
-	const handleDurationRadioBtnClick = (btn) => {
-		console.log("handleDurationRadioBtnClick", btn);
-		setDuration(btn.value);
-		updateState({
-			key: "duration",
-			value: btn.value,
+
+	const handleDurationRadioBtnClick = (duration) => {
+		setDuration(duration);
+		const durationsRadioBtns = [];
+		durations.forEach(item => {
+			durationsRadioBtns.push({
+				label: `${item} days`,
+				name: `${item} days`,
+				value: item,
+				checked: duration === item,
+			});
 		});
+		setDurationsData(durationsRadioBtns);
+		const date = startDate;
+		updateState({ key: "date", value: { ...state.date, date, duration } });
 	};
+
 	return (
 		<div className={`${className}`}>
 			<div className={`${className}-calendar`}>
@@ -297,10 +308,10 @@ const DateTab = ({ durations, state, updateState }) => {
 					<p className={`${className}_title`}>Duration</p>
 
 					<div className='row-start-start'>
-						{durationsRadioBtns.map((btn, i) => (
+						{durationsData.map((btn, i) => (
 							<RadioButton
 								{...btn}
-								onClick={() => handleDurationRadioBtnClick(btn)}
+								onClick={() => handleDurationRadioBtnClick(btn.value)}
 								key={i}
 							/>
 						))}

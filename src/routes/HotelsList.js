@@ -92,6 +92,7 @@ export const HotelsList = () => {
 	}, []);
 
 	const [durations, setDurations] = useState([0]);
+	const [date, setDate] = useState(localStorage.getItem('currentDate') || new Date());
 	useEffect(() => {
 		getDurationList().then(
 			(response) => {
@@ -107,8 +108,8 @@ export const HotelsList = () => {
 		origin: originList[0],
 		destination: destinationList[0],
 		date: {
-			date: new Date(),
-			dateDuration: 7,
+			date: date,
+			duration: 7,
 		},
 		travellers: {
 			adults: 2,
