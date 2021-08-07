@@ -215,8 +215,9 @@ export const HotelsList = () => {
 	// клик по карточке
 	const handleHotelCardClick = ({ hotel }) => {
 		const link = `/hotel-details/${hotel.id}`;
-		const win = window.open(link, "_blank");
-		win.focus();
+		history.push(link);
+		//const win = window.open(link, "_blank");
+		//win.focus();
 
 		localStorage.setItem(
 			"hotelDetailsPageData",

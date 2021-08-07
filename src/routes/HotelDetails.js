@@ -103,8 +103,9 @@ const HotelDetails = () => {
 
 	// выбор рейса (клик на кнопку book)
 	const handleBookClick = () => {
-		const win = window.open(`/hotel-details/${hotel?.id}/purchase`, "_blank");
-		win.focus();
+		history.push(`/hotel-details/${hotel?.id}/purchase`);
+		//const win = window.open(`/hotel-details/${hotel?.id}/purchase`, "_blank");
+		//win.focus();
 
 		localStorage.setItem(
 			"hotelDetailsPageData",
