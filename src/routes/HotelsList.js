@@ -26,22 +26,26 @@ export const HotelsList = () => {
 				const originListData = [];
 				let i = 1;
 				response['origin-list'].active.forEach((listItem) => {
-					originListData.push({
-						title: listItem,
-						id: i,
-						city_code: "RIX",
-						disable: false
-					});
-					i += 1;
+					if (!!listItem) {
+						originListData.push({
+							title: listItem,
+							id: i,
+							city_code: "RIX",
+							disable: false
+						});
+						i += 1;
+					}
 				});
 				response['origin-list'].disable.forEach((listItem) => {
-					originListData.push({
-						title: listItem,
-						id: i,
-						city_code: "RIX",
-						disable: true
-					});
-					i += 1;
+					if (!!listItem) {
+						originListData.push({
+							title: listItem,
+							id: i,
+							city_code: "RIX",
+							disable: true
+						});
+						i += 1;
+					}
 				});
 				setOriginList(originListData);
 			},
@@ -58,22 +62,26 @@ export const HotelsList = () => {
 				const destinationListData = [];
 				let i = 1;
 				response['destination-list'].active.forEach((listItem) => {
-					destinationListData.push({
-						title: listItem,
-						id: i,
-						city_code: "RIX",
-						disable: false
-					});
-					i += 1;
+					if (!!listItem) {
+						destinationListData.push({
+							title: listItem,
+							id: i,
+							city_code: "RIX",
+							disable: false
+						});
+						i += 1;
+					}
 				});
 				response['destination-list'].disable.forEach((listItem) => {
-					destinationListData.push({
-						title: listItem,
-						id: i,
-						city_code: "RIX",
-						disable: true
-					});
-					i += 1;
+					if (!!listItem) {
+						destinationListData.push({
+							title: listItem,
+							id: i,
+							city_code: "RIX",
+							disable: true
+						});
+						i += 1;
+					}
 				});
 				setDestinationList(destinationListData);
 			},
@@ -98,10 +106,9 @@ export const HotelsList = () => {
 	const bookingDataLS = JSON.parse(localStorage.getItem("bookingData")) || {
 		origin: originList[0],
 		destination: destinationList[0],
-		duration: 7,
 		date: {
 			date: new Date(),
-			dateInterval: 5,
+			dateDuration: 7,
 		},
 		travellers: {
 			adults: 2,
@@ -131,7 +138,7 @@ export const HotelsList = () => {
 
 	useEffect(() => {
 		const bookingDataLSNew = bookingDataLS;
-		bookingDataLSNew.duration = durations[0];
+		bookingDataLSNew.date.duration = durations[0];
 		setFilterState(bookingDataLSNew);
 	}, [durations]);
 
@@ -226,17 +233,19 @@ export const HotelsList = () => {
 		const beginDateFormat = getFormatDate(beginDate)
 
 		let endDate = new Date();
-		endDate.setDate(beginDate.getDate() + filterState.duration);
+		endDate.setDate(beginDate.getDate() + filterState.date.duration);
 		const endDateFormat = getFormatDate(endDate);
 
 		// запрос списка отелей
 		const data = JSON.stringify({
 			beginDate: beginDateFormat,
 			endDate: endDateFormat,
-			beginNight: filterState.duration,
-			endNight: filterState.duration,
+			beginNight: filterState.date.duration,
+			endNight: filterState.date.duration,
 			adultNum: filterState.travellers.adults,
-			kidNum: filterState.travellers.children
+			kidNum: filterState.travellers.children,
+			filter: true,
+			sort: true
 		});
 
 		getGetPackages(data).then(
