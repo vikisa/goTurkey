@@ -64,7 +64,6 @@ const HotelDetails = () => {
 
 	// данные буккинга с local storage
 	const bookingDataLS = JSON.parse(localStorage.getItem("bookingData"));
-	console.log("bookingDataLS", bookingDataLS);
 
 	// информация о конкретном отеле  с json
 	const hotel = JSON.parse(localStorage.getItem("hotelDetailsPageData"));
@@ -202,6 +201,47 @@ const HotelDetails = () => {
 		window.scrollTo(0, 0);
 	}, [formState.isOpen, pathname]);
 
+	const handleFlightBlockClick = () => {
+		const value = popoverState === 'popover--open' ? '' : 'popover--open';
+		setPopoverState(value);
+	};
+
+	const [popoverState, setPopoverState] = useState('');
+
+	const getPopoverDate = (dateString) => {
+		const date = new Date(dateString);
+		const getDayOfWeek = new Intl.DateTimeFormat('en-US', { weekday: 'long'}).format(date);
+		const dateFormat = encodeURIComponent(
+			format(
+				date,
+				"dd.MM.yy",
+			),
+		);
+
+		return `${getDayOfWeek}, ${dateFormat}`;
+	};
+
+	const getPopoverTime = (dateStringStart, dateStringEnd) => {
+		const dateFlightStart = dateStringStart.slice(0,5);
+		const dateFlightEnd = dateStringEnd.slice(0,5);
+
+		return `${dateFlightStart} – ${dateFlightEnd}`;
+	};
+
+
+	const popoverText = {
+		to: {
+			date: `${getPopoverDate(hotel.FlightDate)}`,
+			place: `${bookingDataLS['origin']['title']} - ${hotel['resort']}`,
+			time: getPopoverTime(hotel.FlightDateTimeDeparture, hotel.FlightDateTimeArrival)
+		},
+		from: {
+			date: `${getPopoverDate(hotel.BackFlightDate)}`,
+			place: `${hotel['resort']} - ${bookingDataLS['origin']['title']}`,
+			time: getPopoverTime(hotel.BackFlightDateTimeDeparture, hotel.BackFlightDateTimeArrival)
+		}
+	};
+
 	return (
 		<Elements stripe={stripePromise}>
 			<div
@@ -279,9 +319,9 @@ const HotelDetails = () => {
 					<div>
 						<section className={`${className}_desc-block`}>
 							<div
-								style={{
+								/*style={{
 									height: isDescOpen ? `${descHeight}px` : "88px",
-								}}
+								}}*/
 								className={cx(`${className}_desc-block_text`, {
 									"hotel-details_desc-block_text--visible": isDescOpen,
 								})}>
@@ -311,8 +351,12 @@ const HotelDetails = () => {
 							{selectedFlightBlocks.map((block, i) => {
 								const { title, subtitle, desc } = block;
 								const selectedFlight = formState.selectedFlight;
+								const isAirportRoute = subtitle === 'AirportRoute';
 								return (
-									<div className={`${className}_flight-block_item`} key={i}>
+									<div
+										onClick={() => isAirportRoute ?  handleFlightBlockClick() : null}
+										className={`${className}_flight-block_item`}
+										key={i}>
 										<p className={`${className}_flight-block_item-title`}>
 											{title}
 										</p>
@@ -323,6 +367,20 @@ const HotelDetails = () => {
 											<p className={`${className}_flight-block_item-desc`}>
 												{selectedFlight[desc]}
 											</p>
+										)}
+										{isAirportRoute && (
+											<div className={`${className}_flight-block_item-popover ${popoverState}`}>
+												<span onClick={() => handleFlightBlockClick()} className="close"></span>
+												<p className={'popover-header'}>TO THE BEACH:</p>
+												<p className={'popover-text'}>{popoverText.to.date}</p>
+												<p className={'popover-text'}>{popoverText.to.place}</p>
+												<p className={'popover-text'}>{popoverText.to.time}</p>
+
+												<p className={'popover-header'}>BACK HOME:</p>
+												<p className={'popover-text'}>{popoverText.from.date}</p>
+												<p className={'popover-text'}>{popoverText.from.place}</p>
+												<p className={'popover-text'}>{popoverText.from.time}</p>
+											</div>
 										)}
 									</div>
 								);
